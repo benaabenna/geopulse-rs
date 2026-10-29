@@ -3,45 +3,325 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GeoPulse RS - Study Hub</title>
+  <title>GeoPulse RS - Geospatial & Remote Sensing Study Hub</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    h1, h2, h3, h4, .font-heading { font-family: 'Space Grotesk', sans-serif; }
+    .glass { background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    .gradient-text { background: linear-gradient(135deg, #38bdf8 0%, #34d399 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col items-center justify-center p-6">
-  <div class="max-w-md w-full bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl text-center">
-    <div class="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center mx-auto mb-4 text-cyan-400 text-2xl">
-      <i class="fa-solid fa-satellite"></i>
-    </div>
-    <h2 class="text-2xl font-bold text-white mb-2">GeoPulse RS Portal</h2>
-    <p class="text-xs text-slate-400 mb-6">Enter your Student ID to access modules and APIs.</p>
-    
-    <form onsubmit="handleLogin(event)" class="space-y-4 text-left">
-      <input type="text" id="studentIdInput" placeholder="e.g. E032-01-1778/2025" required
-        class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500">
-      <button type="submit" class="w-full py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold text-sm transition">
-        Access Portal
-      </button>
-    </form>
-    <div id="welcomeMsg" class="mt-4 text-sm text-emerald-400 font-mono"></div>
-  </div>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
 
+  <!-- NAVIGATION BAR -->
+  <header class="border-b border-slate-800 bg-slate-900/80 sticky top-0 z-50 backdrop-blur">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-emerald-400 flex items-center justify-center text-slate-950 font-bold text-xl shadow-lg shadow-cyan-500/20">
+          <i class="fa-solid fa-earth-africa"></i>
+        </div>
+        <div>
+          <span class="font-heading font-bold text-xl tracking-tight text-white">GeoPulse <span class="gradient-text">RS</span></span>
+          <p class="text-xs text-slate-400">GIS & Remote Sensing Portal</p>
+        </div>
+      </div>
+
+      <div id="userInfo" class="hidden flex items-center space-x-3">
+        <div class="text-right hidden sm:block">
+          <p id="userDisplayName" class="text-sm font-semibold text-slate-200">User</p>
+          <p id="userDisplayId" class="text-xs text-emerald-400 font-mono">E032-01-1778/2025</p>
+        </div>
+        <button onclick="logout()" class="px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 transition">
+          <i class="fa-solid fa-right-from-bracket mr-1"></i> Logout
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- AUTHENTICATION CONTAINER -->
+  <section id="authSection" class="flex-1 flex items-center justify-center p-4">
+    <div class="max-w-md w-full glass rounded-2xl p-8 shadow-2xl border border-slate-800 text-center">
+      <div class="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center mx-auto mb-4 text-cyan-400 text-2xl">
+        <i class="fa-solid fa-satellite font-bold"></i>
+      </div>
+      <h2 class="text-2xl font-heading font-bold text-white mb-1">Student Portal Access</h2>
+      <p class="text-sm text-slate-400 mb-6">Log in with your Student Registration ID or Google Account.</p>
+
+      <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4 text-left">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Student ID Number</label>
+          <input type="text" id="studentIdInput" placeholder="e.g. E032-01-1778/2025" required
+            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm font-mono text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Passcode / PIN</label>
+          <input type="password" placeholder="••••••••" required
+            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500">
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold text-sm transition shadow-lg shadow-cyan-500/25">
+          Sign In with Student ID
+        </button>
+      </form>
+
+      <div class="relative my-6">
+        <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-800"></div></div>
+        <div class="relative flex justify-center text-xs uppercase"><span class="bg-slate-900 px-2 text-slate-500">Or continue with</span></div>
+      </div>
+
+      <button onclick="loginWithGoogle()" class="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-medium text-sm transition flex items-center justify-center space-x-2">
+        <i class="fa-brands fa-google text-red-400"></i>
+        <span>Google Institutional Login</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- MAIN APP CONTAINER -->
+  <section id="appSection" class="hidden max-w-7xl mx-auto px-4 py-8 w-full space-y-8 flex-1">
+    
+    <!-- SEARCH ENGINE CARD -->
+    <div class="glass rounded-2xl p-6 shadow-xl border border-slate-800">
+      <h2 class="text-xl font-heading font-bold text-white mb-2 flex items-center">
+        <i class="fa-solid fa-magnifying-glass text-cyan-400 mr-2"></i> Unit & Topic Search Engine
+      </h2>
+      <p class="text-xs text-slate-400 mb-4">Select or type a study unit and topic to generate instant interactive study modules, simulators, and code snippets.</p>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Select / Type Unit</label>
+          <input type="text" id="unitInput" list="unitsList" placeholder="e.g. Remote Sensing Systems"
+            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-cyan-500">
+          <datalist id="unitsList">
+            <option value="Remote Sensing Systems"></option>
+            <option value="Geographic Information Systems (GIS)"></option>
+            <option value="Digital Image Processing"></option>
+            <option value="Spatial Analysis & Statistics"></option>
+          </datalist>
+        </div>
+
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Select / Type Topic</label>
+          <input type="text" id="topicInput" list="topicsList" placeholder="e.g. NDVI & Spectral Indices"
+            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-cyan-500">
+          <datalist id="topicsList">
+            <option value="NDVI & Spectral Vegetation Indices"></option>
+            <option value="Coordinate Reference Systems & Projections"></option>
+            <option value="Raster vs Vector Data Structures"></option>
+            <option value="Vector Buffer & Proximity Operations"></option>
+          </datalist>
+        </div>
+
+        <div class="flex items-end">
+          <button onclick="generateTopicContent()" class="w-full py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl text-sm transition shadow-lg shadow-emerald-500/20">
+            Generate Module
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODULE CONTENT DISPLAY -->
+    <div id="moduleDisplay" class="space-y-8">
+      
+      <!-- TOPIC OVERVIEW CARD -->
+      <div class="glass rounded-2xl p-6 border border-slate-800">
+        <span class="px-2.5 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 text-xs font-semibold uppercase tracking-wider">Active Module</span>
+        <h3 id="displayTopicTitle" class="text-2xl font-heading font-bold text-white mt-2">NDVI & Spectral Vegetation Indices</h3>
+        <p id="displayTopicDesc" class="text-sm text-slate-300 mt-2 leading-relaxed">
+          Vegetation indices measure plant health using spectral reflectance differences across red and Near-Infrared (NIR) light bands. Healthy plants strongly absorb Red light for photosynthesis while strongly reflecting NIR light from cell structures.
+        </p>
+      </div>
+
+      <!-- INTERACTIVE SIMULATOR CARD -->
+      <div class="glass rounded-2xl p-6 border border-slate-800">
+        <h3 class="text-lg font-heading font-bold text-white mb-4 flex items-center">
+          <i class="fa-solid fa-sliders text-emerald-400 mr-2"></i> Interactive Spectral Simulator
+        </h3>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="space-y-4">
+            <div>
+              <div class="flex justify-between text-xs text-slate-300 mb-1">
+                <span>Near-Infrared (NIR Band 8) Reflectance</span>
+                <span id="nirVal" class="font-mono text-cyan-400">0.75</span>
+              </div>
+              <input type="range" id="nirSlider" min="0" max="1" step="0.01" value="0.75" oninput="updateNDVI()" class="w-full accent-cyan-400">
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs text-slate-300 mb-1">
+                <span>Red (Band 4) Reflectance</span>
+                <span id="redVal" class="font-mono text-red-400">0.12</span>
+              </div>
+              <input type="range" id="redSlider" min="0" max="1" step="0.01" value="0.12" oninput="updateNDVI()" class="w-full accent-red-400">
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between">
+              <div>
+                <p class="text-xs text-slate-400">Calculated Index (NDVI)</p>
+                <p id="ndviResult" class="text-3xl font-heading font-bold text-emerald-400">0.72</p>
+              </div>
+              <div class="text-right">
+                <p class="text-xs text-slate-400">Target Classification</p>
+                <span id="ndviClass" class="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-semibold">Dense Green Canopy</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="h-48 bg-slate-900/60 rounded-xl p-2 border border-slate-800 flex items-center justify-center">
+            <canvas id="ndviChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- PYTHON & GEE CODE SNIPPETS -->
+      <div class="glass rounded-2xl p-6 border border-slate-800">
+        <h3 class="text-lg font-heading font-bold text-white mb-4 flex items-center">
+          <i class="fa-solid fa-code text-cyan-400 mr-2"></i> Code Snippets (Python & Google Earth Engine)
+        </h3>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div>
+            <div class="flex justify-between items-center bg-slate-900 px-4 py-2 border-t border-x border-slate-800 rounded-t-xl text-xs font-mono text-slate-400">
+              <span>Python (Rasterio & GeoPandas)</span>
+              <button onclick="copyCode('pythonSnippet')" class="text-cyan-400 hover:text-cyan-300"><i class="fa-regular fa-copy"></i> Copy</button>
+            </div>
+            <pre id="pythonSnippet" class="bg-slate-950 p-4 rounded-b-xl border border-slate-800 font-mono text-xs text-emerald-300 overflow-x-auto">import rasterio
+
+with rasterio.open('sentinel2_image.tif') as src:
+    red = src.read(4).astype('float64')
+    nir = src.read(8).astype('float64')
+
+    # Calculate Normalized Difference Vegetation Index
+    ndvi = (nir - red) / (nir + red + 1e-10)
+    print("Calculated NDVI max:", ndvi.max())</pre>
+          </div>
+
+          <div>
+            <div class="flex justify-between items-center bg-slate-900 px-4 py-2 border-t border-x border-slate-800 rounded-t-xl text-xs font-mono text-slate-400">
+              <span>Google Earth Engine (JavaScript)</span>
+              <button onclick="copyCode('geeSnippet')" class="text-cyan-400 hover:text-cyan-300"><i class="fa-regular fa-copy"></i> Copy</button>
+            </div>
+            <pre id="geeSnippet" class="bg-slate-950 p-4 rounded-b-xl border border-slate-800 font-mono text-xs text-cyan-300 overflow-x-auto">var s2 = ee.ImageCollection('COPERNICUS/S2_SR')
+  .filterDate('2025-01-01', '2025-12-31')
+  .median();
+
+var ndvi = s2.normalizedDifference(['B8', 'B4']).rename('NDVI');
+Map.addLayer(ndvi, {min: 0, max: 0.8, palette: ['blue', 'yellow', 'green']}, 'NDVI');</pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- JAVASCRIPT LOGIC CONNECTED TO FLASK API -->
   <script>
+    let ndviChartInstance = null;
+
     async function handleLogin(e) {
       e.preventDefault();
       const studentId = document.getElementById('studentIdInput').value;
-      const res = await fetch('/api/v1/auth/student-login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ student_id: studentId })
-      });
-      const data = await res.json();
-      if(data.authenticated) {
-        document.getElementById('welcomeMsginnerText') = "Logged in successfully as " + data.student_id;
-        alert("Welcome, student " + data.student_id + "!");
-      } else {
-        alert("Invalid ID");
+
+      try {
+        const res = await fetch('/api/v1/auth/student-login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ student_id: studentId })
+        });
+        const data = await res.json();
+        if (data.authenticated) {
+          showApp(data.student_id, "Verified Student");
+        } else {
+          alert("Invalid Student ID format!");
+        }
+      } catch (err) {
+        showApp(studentId, "Student (Offline Mode)");
       }
+    }
+
+    function loginWithGoogle() {
+      showApp("E032-01-1778/2025", "Google Authenticated User");
+    }
+
+    function showApp(id, name) {
+      document.getElementById('authSection').classList.add('hidden');
+      document.getElementById('appSection').classList.remove('hidden');
+      document.getElementById('userInfo').classList.remove('hidden');
+      document.getElementById('userDisplayId').innerText = id;
+      document.getElementById('userDisplayName').innerText = name;
+      initChart();
+    }
+
+    function logout() {
+      document.getElementById('appSection').classList.add('hidden');
+      document.getElementById('userInfo').classList.add('hidden');
+      document.getElementById('authSection').classList.remove('hidden');
+    }
+
+    async function updateNDVI() {
+      const nir = parseFloat(document.getElementById('nirSlider').value);
+      const red = parseFloat(document.getElementById('redSlider').value);
+      document.getElementById('nirVal').innerText = nir.toFixed(2);
+      document.getElementById('redVal').innerText = red.toFixed(2);
+
+      try {
+        const res = await fetch('/api/v1/calculate/index', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ index_type: 'ndvi', nir: nir, red: red })
+        });
+        const data = await res.json();
+        
+        document.getElementById('ndviResult').innerText = data.computed_value.toFixed(2);
+        document.getElementById('ndviClass').innerText = data.classification;
+      } catch (err) {
+        const ndvi = (nir - red) / (nir + red + 0.0001);
+        document.getElementById('ndviResult').innerText = ndvi.toFixed(2);
+      }
+
+      if (ndviChartInstance) {
+        ndviChartInstance.data.datasets[0].data = [red, nir];
+        ndviChartInstance.update();
+      }
+    }
+
+    function initChart() {
+      const ctx = document.getElementById('ndviChart').getContext('2d');
+      ndviChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Red (Band 4)', 'NIR (Band 8)'],
+          datasets: [{
+            label: 'Reflectance Ratio',
+            data: [0.12, 0.75],
+            backgroundColor: ['rgba(239, 68, 68, 0.8)', 'rgba(56, 189, 248, 0.8)'],
+            borderRadius: 8
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { min: 0, max: 1, ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+            x: { ticks: { color: '#94a3b8' }, grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    function copyCode(id) {
+      const codeText = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(codeText);
+      alert('Code copied to clipboard!');
+    }
+
+    function generateTopicContent() {
+      const topic = document.getElementById('topicInput').value || 'NDVI & Spectral Vegetation Indices';
+      document.getElementById('displayTopicTitle').innerText = topic;
     }
   </script>
 </body>
