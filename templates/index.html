@@ -50,12 +50,12 @@
       </div>
       
       <h2 id="authTitle" class="text-2xl font-heading font-bold text-white mb-1">Student Portal Access</h2>
-      <p id="authSubtitle" class="text-sm text-slate-400 mb-6">Log in with your unique Student ID and passcode.</p>
+      <p id="authSubtitle" class="text-sm text-slate-400 mb-6">Log in or register your unique Student ID account.</p>
 
       <!-- TAB TOGGLE -->
       <div class="flex bg-slate-900 p-1 rounded-xl mb-6 border border-slate-800">
         <button id="loginTabBtn" onclick="switchAuthMode('login')" class="flex-1 py-2 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 transition">Sign In</button>
-        <button id="registerTabBtn" onclick="switchAuthMode('register')" class="flex-1 py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition">Register New User</button>
+        <button id="registerTabBtn" onclick="switchAuthMode('register')" class="flex-1 py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition">Register Account</button>
       </div>
 
       <!-- AUTH FORM -->
@@ -85,48 +85,119 @@
     </div>
   </section>
 
-  <!-- MAIN APP CONTAINER -->
+  <!-- MAIN APP CONTAINER (OPEN-ENDED LESSON SEARCH) -->
   <section id="appSection" class="hidden max-w-7xl mx-auto px-4 py-8 w-full space-y-8 flex-1">
+    
+    <!-- FREE-TEXT SEARCH ENGINE CARD -->
     <div class="glass rounded-2xl p-6 shadow-xl border border-slate-800">
       <h2 class="text-xl font-heading font-bold text-white mb-2 flex items-center">
-        <i class="fa-solid fa-magnifying-glass text-cyan-400 mr-2"></i> Remote Sensing Simulator & Study Hub
+        <i class="fa-solid fa-pen-nib text-cyan-400 mr-2"></i> Custom GIS & Remote Sensing Module Generator
       </h2>
-      <p class="text-xs text-slate-400 mb-4">Adjust the reflectance bands to test spectral calculations live.</p>
+      <p class="text-xs text-slate-400 mb-4">Type any unit name and lesson topic you want to study. If it's new, the platform will initialize it instantly!</p>
       
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="space-y-4">
-          <div>
-            <div class="flex justify-between text-xs text-slate-300 mb-1">
-              <span>Near-Infrared (NIR Band 8)</span>
-              <span id="nirVal" class="font-mono text-cyan-400">0.75</span>
-            </div>
-            <input type="range" id="nirSlider" min="0" max="1" step="0.01" value="0.75" oninput="updateNDVI()" class="w-full accent-cyan-400">
-          </div>
-
-          <div>
-            <div class="flex justify-between text-xs text-slate-300 mb-1">
-              <span>Red (Band 4)</span>
-              <span id="redVal" class="font-mono text-red-400">0.12</span>
-            </div>
-            <input type="range" id="redSlider" min="0" max="1" step="0.01" value="0.12" oninput="updateNDVI()" class="w-full accent-red-400">
-          </div>
-
-          <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between">
-            <div>
-              <p class="text-xs text-slate-400">Calculated NDVI</p>
-              <p id="ndviResult" class="text-3xl font-heading font-bold text-emerald-400">0.72</p>
-            </div>
-            <div class="text-right">
-              <p class="text-xs text-slate-400">Classification</p>
-              <span id="ndviClass" class="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-semibold">Dense Green Canopy</span>
-            </div>
-          </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Unit Name</label>
+          <input type="text" id="unitInput" placeholder="e.g. Geospatial Data Structures"
+            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-cyan-500">
         </div>
 
-        <div class="h-48 bg-slate-900/60 rounded-xl p-2 border border-slate-800 flex items-center justify-center">
-          <canvas id="ndviChart"></canvas>
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Lesson / Topic Name</label>
+          <input type="text" id="topicInput" placeholder="e.g. LiDAR Point Cloud Classification"
+            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-cyan-500" required>
+        </div>
+
+        <div class="flex items-end">
+          <button onclick="fetchCustomLesson()" class="w-full py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl text-sm transition shadow-lg shadow-emerald-500/20">
+            Generate / Load Lesson
+          </button>
         </div>
       </div>
+    </div>
+
+    <!-- MODULE CONTENT DISPLAY -->
+    <div id="moduleDisplay" class="space-y-8">
+      
+      <!-- TOPIC OVERVIEW CARD -->
+      <div class="glass rounded-2xl p-6 border border-slate-800">
+        <div class="flex justify-between items-center">
+          <span id="displayUnitName" class="px-2.5 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 text-xs font-semibold uppercase tracking-wider">Digital Image Processing</span>
+          <span id="displayFormula" class="text-xs font-mono text-emerald-400">Formula: (NIR - Red) / (NIR + Red)</span>
+        </div>
+        <h3 id="displayTopicTitle" class="text-2xl font-heading font-bold text-white mt-2">NDVI & Spectral Vegetation Indices</h3>
+        <p id="displayTopicDesc" class="text-sm text-slate-300 mt-2 leading-relaxed">
+          Vegetation indices measure plant health using spectral reflectance differences across red and Near-Infrared (NIR) light bands.
+        </p>
+      </div>
+
+      <!-- INTERACTIVE SIMULATOR CARD -->
+      <div class="glass rounded-2xl p-6 border border-slate-800">
+        <h3 class="text-lg font-heading font-bold text-white mb-4 flex items-center">
+          <i class="fa-solid fa-sliders text-emerald-400 mr-2"></i> Interactive Spectral Simulator
+        </h3>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="space-y-4">
+            <div>
+              <div class="flex justify-between text-xs text-slate-300 mb-1">
+                <span>Near-Infrared (NIR Band 8) Reflectance</span>
+                <span id="nirVal" class="font-mono text-cyan-400">0.75</span>
+              </div>
+              <input type="range" id="nirSlider" min="0" max="1" step="0.01" value="0.75" oninput="updateNDVI()" class="w-full accent-cyan-400">
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs text-slate-300 mb-1">
+                <span>Red (Band 4) Reflectance</span>
+                <span id="redVal" class="font-mono text-red-400">0.12</span>
+              </div>
+              <input type="range" id="redSlider" min="0" max="1" step="0.01" value="0.12" oninput="updateNDVI()" class="w-full accent-red-400">
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between">
+              <div>
+                <p class="text-xs text-slate-400">Calculated Index</p>
+                <p id="ndviResult" class="text-3xl font-heading font-bold text-emerald-400">0.72</p>
+              </div>
+              <div class="text-right">
+                <p class="text-xs text-slate-400">Target Classification</p>
+                <span id="ndviClass" class="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-semibold">Dense Green Canopy</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="h-48 bg-slate-900/60 rounded-xl p-2 border border-slate-800 flex items-center justify-center">
+            <canvas id="ndviChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- PYTHON & GEE CODE SNIPPETS -->
+      <div class="glass rounded-2xl p-6 border border-slate-800">
+        <h3 class="text-lg font-heading font-bold text-white mb-4 flex items-center">
+          <i class="fa-solid fa-code text-cyan-400 mr-2"></i> Code Snippets (Python & Google Earth Engine)
+        </h3>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div>
+            <div class="flex justify-between items-center bg-slate-900 px-4 py-2 border-t border-x border-slate-800 rounded-t-xl text-xs font-mono text-slate-400">
+              <span>Python Code</span>
+              <button onclick="copyCode('pythonSnippet')" class="text-cyan-400 hover:text-cyan-300"><i class="fa-regular fa-copy"></i> Copy</button>
+            </div>
+            <pre id="pythonSnippet" class="bg-slate-950 p-4 rounded-b-xl border border-slate-800 font-mono text-xs text-emerald-300 overflow-x-auto">import rasterio</pre>
+          </div>
+
+          <div>
+            <div class="flex justify-between items-center bg-slate-900 px-4 py-2 border-t border-x border-slate-800 rounded-t-xl text-xs font-mono text-slate-400">
+              <span>Google Earth Engine</span>
+              <button onclick="copyCode('geeSnippet')" class="text-cyan-400 hover:text-cyan-300"><i class="fa-regular fa-copy"></i> Copy</button>
+            </div>
+            <pre id="geeSnippet" class="bg-slate-950 p-4 rounded-b-xl border border-slate-800 font-mono text-xs text-cyan-300 overflow-x-auto">// GEE script</pre>
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -147,14 +218,14 @@
       if (isRegisterMode) {
         nameField.classList.remove('hidden');
         authTitle.innerText = "Create New Account";
-        authSubtitle.innerText = "Register with your Student ID and a secure passcode.";
+        authSubtitle.innerText = "Register with your Student ID and secure passcode.";
         submitBtn.innerText = "Register Account";
         regBtn.className = "flex-1 py-2 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 transition";
         loginBtn.className = "flex-1 py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition";
       } else {
         nameField.classList.add('hidden');
         authTitle.innerText = "Student Portal Access";
-        authSubtitle.innerText = "Log in with your unique Student ID and passcode.";
+        authSubtitle.innerText = "Log in or register your unique Student ID account.";
         submitBtn.innerText = "Sign In";
         loginBtn.className = "flex-1 py-2 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 transition";
         regBtn.className = "flex-1 py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition";
@@ -208,6 +279,39 @@
       document.getElementById('authSection').classList.remove('hidden');
     }
 
+    async function fetchCustomLesson() {
+      const unitName = document.getElementById('unitInput').value;
+      const topicName = document.getElementById('topicInput').value;
+
+      if (!topicName) {
+        alert("Please enter a lesson or topic name!");
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/v1/lessons/search', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ unit_name: unitName, topic_name: topicName })
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+          const lesson = data.data;
+          document.getElementById('displayUnitName').innerText = lesson.unit;
+          document.getElementById('displayTopicTitle').innerText = lesson.topic;
+          document.getElementById('displayTopicDesc').innerText = lesson.description;
+          document.getElementById('displayFormula').innerText = "Formula: " + lesson.formula;
+          document.getElementById('pythonSnippet').innerText = lesson.python_code;
+          document.getElementById('geeSnippet').innerText = lesson.gee_code;
+        } else {
+          alert(data.message || "Could not load lesson.");
+        }
+      } catch (err) {
+        alert("Error connecting to server.");
+      }
+    }
+
     async function updateNDVI() {
       const nir = parseFloat(document.getElementById('nirSlider').value);
       const red = parseFloat(document.getElementById('redSlider').value);
@@ -257,6 +361,12 @@
           }
         }
       });
+    }
+
+    function copyCode(id) {
+      const codeText = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(codeText);
+      alert('Code copied to clipboard!');
     }
   </script>
 </body>
