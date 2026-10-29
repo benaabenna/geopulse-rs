@@ -5,6 +5,9 @@ import numpy as np
 app = Flask(__name__)
 CORS(app)
 
+# ==========================================
+# MOCK DATABASE / GEOSPATIAL KNOWLEDGE BASE
+# ==========================================
 KNOWLEDGE_BASE = {
     "ndvi": {
         "unit": "Digital Image Processing",
@@ -24,16 +27,27 @@ KNOWLEDGE_BASE = {
     }
 }
 
+# ==========================================
+# WEB ROUTE (FRONTEND)
+# ==========================================
 @app.route("/")
 def index():
     return render_template("index.html")
 
+# ==========================================
+# REST API ENDPOINTS
+# ==========================================
 @app.route("/api/v1", methods=["GET"])
 def api_info():
     return jsonify({
         "app_name": "GeoPulse RS API",
         "version": "1.0",
-        "status": "online"
+        "status": "online",
+        "available_endpoints": {
+            "GET /api/v1/modules": "List all GIS & Remote Sensing modules",
+            "POST /api/v1/calculate/index": "Compute spectral index from raw band values",
+            "POST /api/v1/auth/student-login": "Validate student credentials"
+        }
     }), 200
 
 @app.route("/api/v1/modules", methods=["GET"])
@@ -57,7 +71,13 @@ def calculate_index():
         denom[denom == 0] = 1e-10
         result = (nir_val - red_val) / denom
 
-        classification = "Dense Canopy / Healthy Vegetation" if float(result) > 0.5 else "Soil / Moderate Vegetation"
+        val = float(result) if result.ndim == 0 or len(np.atleast_1d(result)) == 1 else float(result.mean())
+        if val > 0.5:
+            classification = "Dense Green Canopy"
+        elif val > 0.2:
+            classification = "Moderate Vegetation / Crops"
+        else:
+            classification = "Water / Bare Soil"
 
         return jsonify({
             "status": "success",
@@ -72,11 +92,15 @@ def calculate_index():
 def student_login():
     data = request.get_json() or {}
     student_id = data.get("student_id", "").strip()
-    is_valid = len(student_id) > 5
+    passcode = data.get("passcode", "").strip()
+    
+    is_valid = len(student_id) > 3
+
     return jsonify({
         "status": "success" if is_valid else "invalid",
         "authenticated": is_valid,
-        "student_id": student_id
+        "student_id": student_id,
+        "message": "Login successful" if is_valid else "Invalid ID format"
     }), 200 if is_valid else 401
 
 if __name__ == "__main__":
