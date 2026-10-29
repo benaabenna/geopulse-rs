@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GeoPulse RS - Study Hub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col items-center justify-center p-6">
+  <div class="max-w-md w-full bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl text-center">
+    <div class="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center mx-auto mb-4 text-cyan-400 text-2xl">
+      <i class="fa-solid fa-satellite"></i>
+    </div>
+    <h2 class="text-2xl font-bold text-white mb-2">GeoPulse RS Portal</h2>
+    <p class="text-xs text-slate-400 mb-6">Enter your Student ID to access modules and APIs.</p>
+    
+    <form onsubmit="handleLogin(event)" class="space-y-4 text-left">
+      <input type="text" id="studentIdInput" placeholder="e.g. E032-01-1778/2025" required
+        class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500">
+      <button type="submit" class="w-full py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold text-sm transition">
+        Access Portal
+      </button>
+    </form>
+    <div id="welcomeMsg" class="mt-4 text-sm text-emerald-400 font-mono"></div>
+  </div>
+
+  <script>
+    async function handleLogin(e) {
+      e.preventDefault();
+      const studentId = document.getElementById('studentIdInput').value;
+      const res = await fetch('/api/v1/auth/student-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ student_id: studentId })
+      });
+      const data = await res.json();
+      if(data.authenticated) {
+        document.getElementById('welcomeMsginnerText') = "Logged in successfully as " + data.student_id;
+        alert("Welcome, student " + data.student_id + "!");
+      } else {
+        alert("Invalid ID");
+      }
+    }
+  </script>
+</body>
+</html>
