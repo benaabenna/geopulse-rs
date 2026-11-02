@@ -3,1179 +3,901 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PhysMath Vault - Comprehensive Equation Library</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#eef2ff',
-                            100: '#e0e7ff',
-                            400: '#818cf8',
-                            500: '#6366f1',
-                            600: '#4f46e5',
-                            700: '#4338ca',
-                            900: '#312e81',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <!-- KaTeX CSS & JS -->
+    <title>PhysMath Vault — Ultimate Equation & Formula Engine</title>
+
+    <!-- KaTeX CSS & JS for Lightning-Fast LaTeX Rendering -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
+            onload="renderMathInElement(document.body);"></script>
+
+    <!-- Google Fonts & Lucide Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        :root {
+            --bg-base: #090d16;
+            --bg-surface: #111827;
+            --bg-card: rgba(17, 24, 39, 0.75);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(59, 130, 246, 0.4);
+            
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --accent-blue: #3b82f6;
+            --accent-cyan: #06b6d4;
+            --accent-purple: #8b5cf6;
+            --accent-amber: #f59e0b;
+
+            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+            --font-mono: 'Fira Code', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 10%, rgba(59, 130, 246, 0.07) 0%, transparent 40%),
+                radial-gradient(circle at 90% 90%, rgba(139, 92, 246, 0.07) 0%, transparent 40%);
+            background-attachment: fixed;
         }
-        .katex-display {
-            margin: 0.5em 0 !important;
+
+        /* Header Layout */
+        header {
+            background: rgba(9, 13, 22, 0.9);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            padding: 1rem 2rem;
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5krem;
+            flex-wrap: wrap;
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1.25rem;
+            letter-spacing: -0.02em;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .brand-logo i {
+            color: var(--accent-cyan);
+        }
+
+        .search-group {
+            flex: 1;
+            max-width: 500px;
+            display: flex;
+            position: relative;
+        }
+
+        .search-group i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            width: 18px;
+            height: 18px;
+        }
+
+        .search-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            border-radius: 9999px 0 0 9999px;
+            padding: 0.6rem 1rem 0.6rem 2.75rem;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent-blue);
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        .search-btn {
+            background: var(--accent-blue);
+            border: 1px solid var(--accent-blue);
+            color: white;
+            padding: 0.6rem 1.25rem;
+            border-radius: 0 9999px 9999px 0;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: background 0.15s ease;
+        }
+
+        .search-btn:hover {
+            background: #2563eb;
+        }
+
+        .stat-badges {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .badge span {
+            color: var(--accent-cyan);
+            font-weight: 600;
+        }
+
+        /* Tabs Navigation Bar */
+        .tabs-nav-container {
+            background: rgba(17, 24, 39, 0.5);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.75rem 2rem;
+            position: sticky;
+            top: 73px;
+            z-index: 40;
+            backdrop-filter: blur(8px);
             overflow-x: auto;
-            overflow-y: hidden;
-            padding: 0.25em 0;
         }
-        /* Custom scrollbars */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
+
+        .tabs-list {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            gap: 0.5rem;
+            list-style: none;
+            white-space: nowrap;
         }
-        ::-webkit-scrollbar-track {
-            background: #0f172a;
+
+        .tab-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-muted);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.15s ease;
         }
-        ::-webkit-scrollbar-thumb {
-            background: #334155;
-            border-radius: 4px;
+
+        .tab-btn:hover {
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text-main);
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #475569;
+
+        .tab-btn.active {
+            background: rgba(59, 130, 246, 0.15);
+            border-color: rgba(59, 130, 246, 0.4);
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        .tab-btn .count {
+            font-size: 0.7rem;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 0.1rem 0.4rem;
+            border-radius: 999px;
+        }
+
+        /* Workspace Grid Container */
+        .workspace {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+            width: 100%;
+            flex: 1;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .eq-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            position: relative;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .eq-card:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .eq-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .eq-cat {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent-cyan);
+            font-weight: 600;
+            margin-top: 0.2rem;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 0.4rem;
+        }
+
+        .icon-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 6px;
+            transition: all 0.15s ease;
+        }
+
+        .icon-btn:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .icon-btn.bookmarked {
+            color: var(--accent-amber);
+        }
+
+        .math-display {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 8px;
+            padding: 1.2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80px;
+            overflow-x: auto;
+        }
+
+        .eq-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* Interactive Solver Section */
+        .solver-box {
+            background: rgba(255, 255, 255, 0.02);
+            border-top: 1px solid var(--border-color);
+            margin-top: auto;
+            padding-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .solver-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .solver-inputs {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .input-group label {
+            font-size: 0.75rem;
+            font-family: var(--font-mono);
+            color: var(--accent-cyan);
+        }
+
+        .input-group input {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.35rem 0.5rem;
+            color: #fff;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            border-color: var(--accent-blue);
+        }
+
+        .calc-btn {
+            background: var(--accent-blue);
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 0.4rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        .calc-btn:hover {
+            background: #2563eb;
+        }
+
+        .calc-result {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--accent-cyan);
+            background: rgba(6, 182, 212, 0.08);
+            border: 1px dashed rgba(6, 182, 212, 0.3);
+            padding: 0.4rem;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--accent-blue);
+            color: #fff;
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            transform: translateY(150%);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 100;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+        }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-muted);
+            font-size: 1rem;
         }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-brand-500 selection:text-white">
+<body>
 
-    <!-- Header / Navbar -->
-    <header class="sticky top-0 z-40 bg-slate-900/80 backdrop-blur-md border-b border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-400 flex items-center justify-center text-white shadow-lg shadow-brand-500/30">
-                    <i class="fa-solid fa-square-root-variable text-xl"></i>
-                </div>
-                <div>
-                    <h1 class="font-bold text-lg leading-tight bg-gradient-to-r from-white via-slate-200 to-indigo-300 bg-clip-text text-transparent">PhysMath Vault</h1>
-                    <p class="text-xs text-slate-400">Master Equation Library & Interactive Solvers</p>
-                </div>
+    <!-- Header Engine Navigation -->
+    <header>
+        <div class="header-container">
+            <a href="#" class="brand-logo">
+                <i data-lucide="atom"></i>
+                PhysMath Vault
+            </a>
+
+            <div class="search-group">
+                <i data-lucide="search"></i>
+                <input type="text" id="searchInput" class="search-input" placeholder="Search equations by name, symbol, or term...">
+                <button class="search-btn" id="searchBtn">Search</button>
             </div>
 
-            <div class="flex items-center space-x-3 sm:space-x-4">
-                <button onclick="toggleFavoritesFilter()" id="favToggleBtn" class="text-xs px-3 py-1.5 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-800 text-slate-300 hover:text-white transition flex items-center gap-1.5">
-                    <i class="fa-solid fa-bookmark text-amber-400"></i> Bookmarks <span id="favCount" class="bg-amber-400/20 text-amber-300 px-1.5 py-0.5 rounded-full text-[10px] font-bold">0</span>
-                </button>
-                <button onclick="openAboutModal()" class="text-xs sm:text-sm text-slate-400 hover:text-indigo-400 transition flex items-center gap-1.5">
-                    <i class="fa-solid fa-circle-info"></i> Info
-                </button>
+            <div class="stat-badges">
+                <div class="badge">
+                    <i data-lucide="layers" style="width: 14px; height: 14px;"></i>
+                    Formulas: <span id="totalFormulas">0</span>
+                </div>
+                <div class="badge">
+                    <i data-lucide="bookmark" style="width: 14px; height: 14px;"></i>
+                    Saved: <span id="savedCount">0</span>
+                </div>
             </div>
         </div>
     </header>
 
-    <!-- Main Content Area -->
-    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-        
-        <!-- Search and Header Controls -->
-        <section class="text-center max-w-3xl mx-auto space-y-4 pt-2">
-            <h2 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
-                The Master <span class="bg-gradient-to-r from-brand-400 to-cyan-400 bg-clip-text text-transparent">Equation Reference</span>
-            </h2>
-            <p class="text-slate-400 text-xs sm:text-base">
-                Explore fundamental laws governing physics, mathematics, and cosmology with interactive step-by-step solvers.
-            </p>
+    <!-- Category Tabs Navigation Bar -->
+    <nav class="tabs-nav-container">
+        <ul class="tabs-list" id="tabsList">
+            <!-- Dynamically Rendered Tabs -->
+        </ul>
+    </nav>
 
-            <!-- Search Input Box -->
-            <div class="relative max-w-2xl mx-auto mt-4">
-                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
-                    <i class="fa-solid fa-magnifying-glass text-base sm:text-lg"></i>
-                </div>
-                <input type="text" id="searchInput" 
-                    placeholder="Search equations, symbols (e.g. E=mc^2), disciplines, or variables..."
-                    class="w-full pl-11 pr-12 py-3 bg-slate-900/90 border border-slate-700/80 rounded-2xl text-slate-100 text-sm sm:text-base placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition shadow-inner"
-                    oninput="filterEquations()">
-                <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-white">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-        </section>
-
-        <!-- Category Horizontal Scroll Filter -->
-        <section class="flex items-center justify-start sm:justify-center overflow-x-auto py-2 gap-2 no-scrollbar" id="categoryContainer">
-            <!-- Populated via JS -->
-        </section>
-
-        <!-- Search Statistics Counter -->
-        <div class="flex items-center justify-between text-xs text-slate-400 px-2 pt-2 border-b border-slate-800/80 pb-3">
-            <span id="statsCounter">Showing 0 equations</span>
-            <div class="flex items-center gap-2">
-                <label for="sortSelect" class="text-slate-500 hidden sm:inline">Sort by:</label>
-                <select id="sortSelect" onchange="renderEquations()" class="bg-slate-900 border border-slate-800 text-slate-300 rounded-lg px-2.5 py-1 text-xs focus:outline-none focus:ring-1 focus:ring-brand-500">
-                    <option value="default">Default Order</option>
-                    <option value="name">Name (A-Z)</option>
-                    <option value="category">Discipline</option>
-                </select>
-            </div>
+    <!-- Main Workspace -->
+    <main class="workspace">
+        <div class="grid-container" id="equationGrid">
+            <!-- Dynamically Rendered Cards -->
         </div>
-
-        <!-- Equation Cards Grid -->
-        <section class="grid grid-cols-1 lg:grid-cols-2 gap-6" id="equationGrid">
-            <!-- Cards rendered via JS -->
-        </section>
-
-        <!-- Empty State -->
-        <div id="noResults" class="hidden text-center py-16 space-y-3">
-            <div class="w-16 h-16 mx-auto rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-500 text-2xl">
-                <i class="fa-solid fa-folder-open"></i>
-            </div>
-            <h3 class="text-lg font-semibold text-slate-300">No matching equations found</h3>
-            <p class="text-slate-500 text-xs sm:text-sm">Try broadening your search term or switching discipline filters.</p>
-            <button onclick="resetFilters()" class="mt-2 px-4 py-2 bg-brand-600 text-white text-xs font-medium rounded-xl hover:bg-brand-500 transition">
-                Reset All Filters
-            </button>
-        </div>
-
     </main>
 
-    <!-- Footer -->
-    <footer class="mt-auto border-t border-slate-800/80 bg-slate-950/80 py-6 text-center text-xs text-slate-500">
-        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-3">
-            <p>© 2026 PhysMath Vault. Built with KaTeX & Tailwind CSS.</p>
-            <div class="flex items-center space-x-4">
-                <span><i class="fa-solid fa-bolt text-amber-400 me-1"></i> Fast LaTeX & Live Math Engine</span>
-            </div>
-        </div>
-    </footer>
+    <!-- Notification Toast -->
+    <div id="toast" class="toast">LaTeX Copied to Clipboard!</div>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed bottom-6 right-6 transform translate-y-20 opacity-0 transition-all duration-300 z-50 bg-slate-800 border border-brand-500/40 text-slate-100 px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-3 pointer-events-none">
-        <div class="w-7 h-7 rounded-lg bg-brand-500/20 text-brand-400 flex items-center justify-center">
-            <i class="fa-solid fa-check text-sm"></i>
-        </div>
-        <span id="toastMsg" class="text-xs sm:text-sm font-medium">Copied to clipboard!</span>
-    </div>
-
-    <!-- About Modal -->
-    <div id="aboutModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 text-slate-300 shadow-2xl relative">
-            <button onclick="closeAboutModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
-            <h3 class="text-xl font-bold text-white flex items-center gap-2">
-                <i class="fa-solid fa-atom text-brand-400"></i> About PhysMath Vault
-            </h3>
-            <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">
-                PhysMath Vault is a comprehensive equation reference for students, scientists, and engineers across 12+ disciplines. 
-            </p>
-            <div class="border-t border-slate-800 pt-3 text-xs space-y-2 text-slate-400">
-                <p><strong>Supported Disciplines:</strong> Mechanics, Electromagnetism, Quantum Mechanics, Relativity, Thermodynamics, Calculus, Linear Algebra, Probability & Statistics, Geometry, Fluid Dynamics, Optics, Astrophysics.</p>
-            </div>
-            <button onclick="closeAboutModal()" class="w-full py-2.5 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-xs sm:text-sm font-medium transition">
-                Close Reference Info
-            </button>
-        </div>
-    </div>
-
-    <!-- Application Script -->
     <script>
-        // Extended Master Dataset Across 12 Disciplines
+        // Comprehensive Multi-Disciplinary Equation Dataset (Math, Physics, Geometry, Calculus, Stats, Mechanics)
         const equations = [
+            // --- MECHANICS ---
+            {
+                id: 'newton-second',
+                title: "Newton's Second Law",
+                category: 'Mechanics',
+                latex: 'F = m \\cdot a',
+                desc: 'Relates force, mass, and acceleration for an object.',
+                solver: {
+                    inputs: [
+                        { name: 'm', label: 'Mass (kg)', default: 10 },
+                        { name: 'a', label: 'Accel (m/s²)', default: 9.8 }
+                    ],
+                    calc: (v) => `Force = ${(v.m * v.a).toFixed(2)} N`
+                }
+            },
+            {
+                id: 'kinetic-energy',
+                title: 'Kinetic Energy',
+                category: 'Mechanics',
+                latex: 'E_k = \\frac{1}{2} m v^2',
+                desc: 'Energy possessed by an object due to its motion.',
+                solver: {
+                    inputs: [
+                        { name: 'm', label: 'Mass (kg)', default: 2 },
+                        { name: 'v', label: 'Velocity (m/s)', default: 5 }
+                    ],
+                    calc: `E_k = ${(0.5 * v.m * v.v**2).toFixed(2)} J`
+                }
+            },
+            {
+                id: 'potential-energy',
+                title: 'Gravitational Potential Energy',
+                category: 'Mechanics',
+                latex: 'U = m g h',
+                desc: 'Energy stored due to an object\'s position in a gravitational field.',
+                solver: {
+                    inputs: [
+                        { name: 'm', label: 'Mass (kg)', default: 5 },
+                        { name: 'h', label: 'Height (m)', default: 10 }
+                    ],
+                    calc: `U = ${(v.m * 9.80665 * v.h).toFixed(2)} J`
+                }
+            },
+            {
+                id: 'momentum',
+                title: 'Linear Momentum',
+                category: 'Mechanics',
+                latex: 'p = m \\cdot v',
+                desc: 'Product of the mass and velocity of an object.'
+            },
+            {
+                id: 'work-energy',
+                title: 'Mechanical Work',
+                category: 'Mechanics',
+                latex: 'W = F \\cdot d \\cos(\\theta)',
+                desc: 'Energy transferred by a force acting over a displacement.'
+            },
+
+            // --- GEOMETRY & TRIGONOMETRY ---
+            {
+                id: 'pythagorean',
+                title: 'Pythagorean Theorem',
+                category: 'Geometry',
+                latex: 'a^2 + b^2 = c^2',
+                desc: 'Relates side lengths of a right triangle.',
+                solver: {
+                    inputs: [
+                        { name: 'a', label: 'Leg a', default: 3 },
+                        { name: 'b', label: 'Leg b', default: 4 }
+                    ],
+                    calc: `Hypotenuse c = ${Math.sqrt(v.a**2 + v.b**2).toFixed(3)}`
+                }
+            },
+            {
+                id: 'circle-area',
+                title: 'Area of a Circle',
+                category: 'Geometry',
+                latex: 'A = \\pi r^2',
+                desc: 'Calculates area enclosed by a circle.',
+                solver: {
+                    inputs: [{ name: 'r', label: 'Radius r', default: 5 }],
+                    calc: `Area = ${(Math.PI * v.r**2).toFixed(3)}`
+                }
+            },
+            {
+                id: 'sphere-volume',
+                title: 'Volume of a Sphere',
+                category: 'Geometry',
+                latex: 'V = \\frac{4}{3} \\pi r^3',
+                desc: '3D spatial volume of a sphere.',
+                solver: {
+                    inputs: [{ name: 'r', label: 'Radius r', default: 3 }],
+                    calc: `Volume = ${((4/3) * Math.PI * v.r**3).toFixed(3)}`
+                }
+            },
+            {
+                id: 'triangle-area',
+                title: 'Area of a Triangle',
+                category: 'Geometry',
+                latex: 'A = \\frac{1}{2} b h',
+                desc: 'Standard base and height triangle area formula.'
+            },
+            {
+                id: 'trig-identity',
+                title: 'Pythagorean Trigonometric Identity',
+                category: 'Geometry',
+                latex: '\\sin^2(\\theta) + \\cos^2(\\theta) = 1',
+                desc: 'Fundamental identity relating sine and cosine.'
+            },
+
+            // --- CALCULUS & ANALYSIS ---
+            {
+                id: 'derivative-def',
+                title: 'Limit Definition of Derivative',
+                category: 'Calculus',
+                latex: "f'(x) = \\lim_{h \\to 0} \\frac{f(x+h) - f(x)}{h}",
+                desc: 'Instantaneous rate of change of a function.'
+            },
+            {
+                id: 'integration-parts',
+                title: 'Integration by Parts',
+                category: 'Calculus',
+                latex: '\\int u \\, dv = uv - \\int v \\, du',
+                desc: 'Technique for simplifying integral evaluations.'
+            },
+            {
+                id: 'fundamental-theorem',
+                title: 'Fundamental Theorem of Calculus',
+                category: 'Calculus',
+                latex: '\\int_{a}^{b} f(x) \\, dx = F(b) - F(a)',
+                desc: 'Connects differentiation and integration operations.'
+            },
+            {
+                id: 'taylor-series',
+                title: 'Taylor Series Expansion',
+                category: 'Calculus',
+                latex: 'f(x) = \\sum_{n=0}^{\\infty} \\frac{f^{(n)}(a)}{n!} (x - a)^n',
+                desc: 'Approximates functions as infinite polynomial sums.'
+            },
+
+            // --- THERMODYNAMICS ---
+            {
+                id: 'ideal-gas',
+                title: 'Ideal Gas Law',
+                category: 'Thermodynamics',
+                latex: 'P V = n R T',
+                desc: 'Relates pressure, volume, temperature, and moles of a gas.',
+                solver: {
+                    inputs: [
+                        { name: 'n', label: 'Moles (n)', default: 1 },
+                        { name: 'T', label: 'Temp (K)', default: 298.15 },
+                        { name: 'V', label: 'Volume (m³)', default: 0.0224 }
+                    ],
+                    calc: `Pressure = ${((v.n * 8.31446 * v.T) / v.V).toFixed(1)} Pa`
+                }
+            },
+            {
+                id: 'entropy-boltzmann',
+                title: 'Boltzmann Entropy',
+                category: 'Thermodynamics',
+                latex: 'S = k_B \\ln \\Omega',
+                desc: 'Links macroscopic entropy to microstate count.'
+            },
+            {
+                id: 'first-law-thermo',
+                title: 'First Law of Thermodynamics',
+                category: 'Thermodynamics',
+                latex: '\\Delta U = Q - W',
+                desc: 'Conservation of energy applied to thermodynamic systems.'
+            },
+
+            // --- ELECTROMAGNETISM ---
+            {
+                id: 'coulomb-law',
+                title: "Coulomb's Law",
+                category: 'Electromagnetism',
+                latex: 'F = k_e \\frac{q_1 q_2}{r^2}',
+                desc: 'Electrostatic force between two point charges.'
+            },
+            {
+                id: 'ohm-law',
+                title: "Ohm's Law",
+                category: 'Electromagnetism',
+                latex: 'V = I \\cdot R',
+                desc: 'Relates voltage, current, and electrical resistance.',
+                solver: {
+                    inputs: [
+                        { name: 'I', label: 'Current (A)', default: 2 },
+                        { name: 'R', label: 'Resistance (Ω)', default: 50 }
+                    ],
+                    calc: `Voltage = ${(v.I * v.R).toFixed(2)} V`
+                }
+            },
+            {
+                id: 'maxwell-gauss',
+                title: "Gauss's Law for Electricity",
+                category: 'Electromagnetism',
+                latex: '\\nabla \\cdot \\mathbf{E} = \\frac{\\rho}{\\varepsilon_0}',
+                desc: 'Relates electric field divergence to electric charge density.'
+            },
+
+            // --- QUANTUM & RELATIVITY ---
             {
                 id: 'mass-energy',
                 title: 'Mass-Energy Equivalence',
                 category: 'Relativity',
                 latex: 'E = m c^2',
-                description: 'Albert Einstein\'s formula asserting that mass and energy are proportional and interchangeable.',
-                variables: [
-                    { symbol: 'E', name: 'Rest Energy', unit: 'Joules (J)' },
-                    { symbol: 'm', name: 'Relativistic / Rest Mass', unit: 'Kilograms (kg)' },
-                    { symbol: 'c', name: 'Speed of Light in Vacuum', unit: '299,792,458 m/s' }
-                ],
-                example: {
-                    problem: 'Calculate the energy liberated by converting 1 gram (0.001 kg) of matter into energy.',
-                    solutionSteps: [
-                        'Identify parameters: $m = 0.001\\text{ kg}, c \\approx 3 \\times 10^8\\text{ m/s}$.',
-                        'Apply $E = m c^2$: $E = 0.001 \\times (3 \\times 10^8)^2$.',
-                        'Result: $E = 8.987 \\times 10^{13}\\text{ Joules}$ (Equivalent to ~21 kilotons of TNT).'
-                    ]
-                },
-                calculator: {
-                    inputs: [{ id: 'm', label: 'Mass (m in kg)', default: 0.001 }],
-                    compute: (vals) => {
-                        const m = parseFloat(vals.m) || 0;
-                        const c = 299792458;
-                        const E = m * Math.pow(c, 2);
-                        return { label: 'Rest Energy (E)', value: E.toExponential(4), unit: 'J' };
-                    }
+                desc: 'Einstein rest energy formula.',
+                solver: {
+                    inputs: [{ name: 'm', label: 'Mass (kg)', default: 1 }],
+                    calc: `Energy = ${(v.m * (299792458)**2).toExponential(4)} J`
                 }
             },
             {
-                id: 'einstein-field',
-                title: 'Einstein Field Equations',
-                category: 'Relativity',
-                latex: 'G_{\\mu\\nu} + \\Lambda g_{\\mu\\nu} = \\frac{8\\pi G}{c^4} T_{\\mu\\nu}',
-                description: 'Relates the geometry of spacetime (curvature) to the distribution of matter and energy within it.',
-                variables: [
-                    { symbol: 'G_μν', name: 'Einstein Tensor', unit: 'Spacetime Curvature' },
-                    { symbol: 'g_μν', name: 'Metric Tensor', unit: 'Spacetime Geometry' },
-                    { symbol: 'T_μν', name: 'Stress-Energy Tensor', unit: 'Energy-Momentum Density' },
-                    { symbol: 'Λ', name: 'Cosmological Constant', unit: 'Dark Energy Density' }
-                ],
-                example: {
-                    problem: 'Evaluate the coupling constant factor $\\kappa = \\frac{8\\pi G}{c^4}$.',
-                    solutionSteps: [
-                        'Plug in $G = 6.6743 \\times 10^{-11}\\text{ m}^3/(\\text{kg s}^2)$ and $c = 2.9979 \\times 10^8\\text{ m/s}$.',
-                        '$\\kappa = \\frac{8 \\pi (6.6743 \\times 10^{-11})}{(2.9979 \\times 10^8)^4}$.',
-                        'Result: $\\kappa \\approx 2.076 \\times 10^{-43}\\text{ N}^{-1}$.'
-                    ]
-                },
-                calculator: {
-                    inputs: [{ id: 'G_scale', label: 'Gravitational Constant G Multiplier', default: 1 }],
-                    compute: (vals) => {
-                        const g_mult = parseFloat(vals.G_scale) || 1;
-                        const G = 6.67430e-11 * g_mult;
-                        const c = 299792458;
-                        const kappa = (8 * Math.PI * G) / Math.pow(c, 4);
-                        return { label: 'Coupling Constant (κ)', value: kappa.toExponential(4), unit: 'N⁻¹' };
-                    }
-                }
+                id: 'schrodinger',
+                title: 'Schrödinger Equation',
+                category: 'Quantum',
+                latex: 'i\\hbar \\frac{\\partial}{\\partial t}\\Psi = \\hat{H}\\Psi',
+                desc: 'Governs quantum wave function evolution.'
             },
             {
-                id: 'time-dilation',
-                title: 'Special Relativity Time Dilation',
-                category: 'Relativity',
-                latex: '\\Delta t\' = \\frac{\\Delta t}{\\sqrt{1 - \\frac{v^2}{c^2}}} = \\gamma \\Delta t',
-                description: 'The difference in elapsed time measured by two observers due to a relative velocity between them.',
-                variables: [
-                    { symbol: 'Δt\'', name: 'Dilated Time (Moving Frame)', unit: 'Seconds (s)' },
-                    { symbol: 'Δt', name: 'Proper Time (Stationary Frame)', unit: 'Seconds (s)' },
-                    { symbol: 'v', name: 'Relative Velocity', unit: 'm/s' },
-                    { symbol: 'γ', name: 'Lorentz Factor', unit: 'Dimensionless' }
-                ],
-                example: {
-                    problem: 'Calculate the time dilation for a clock moving at 80% the speed of light ($v = 0.8c$) for 1 hour.',
-                    solutionSteps: [
-                        'Compute Lorentz Factor $\\gamma = \\frac{1}{\\sqrt{1 - 0.8^2}} = \\frac{1}{\\sqrt{0.36}} = 1.25$.',
-                        'Multiply proper time: $\\Delta t\' = 1.25 \\times 1\\text{ hr} = 1.25\\text{ hours}$ (75 mins).'
-                    ]
-                },
-                calculator: {
-                    inputs: [
-                        { id: 't', label: 'Proper Time (Δt in seconds)', default: 60 },
-                        { id: 'v_ratio', label: 'Velocity (as fraction of c, 0 to 0.999)', default: 0.8 }
-                    ],
-                    compute: (vals) => {
-                        const t = parseFloat(vals.t) || 0;
-                        let v_ratio = parseFloat(vals.v_ratio) || 0;
-                        if (v_ratio >= 1) v_ratio = 0.9999;
-                        const gamma = 1 / Math.sqrt(1 - Math.pow(v_ratio, 2));
-                        const dilated = t * gamma;
-                        return { label: 'Dilated Time (Δt\')', value: `${dilated.toFixed(3)} (γ = ${gamma.toFixed(3)})`, unit: 's' };
-                    }
-                }
+                id: 'planck-relation',
+                title: 'Planck-Einstein Relation',
+                category: 'Quantum',
+                latex: 'E = h \\nu',
+                desc: 'Photon energy proportional to frequency.'
             },
+
+            // --- STATISTICS & PROBABILITY ---
             {
-                id: 'schrodinger-time-dependent',
-                title: 'Time-Dependent Schrödinger Equation',
-                category: 'Quantum Mechanics',
-                latex: 'i \\hbar \\frac{\\partial}{\\partial t} \\Psi(\\mathbf{r}, t) = \\hat{H} \\Psi(\\mathbf{r}, t)',
-                description: 'The foundational wave equation governing the time evolution of a quantum system\'s wave function.',
-                variables: [
-                    { symbol: 'i', name: 'Imaginary Unit', unit: '√(-1)' },
-                    { symbol: 'ℏ', name: 'Reduced Planck Constant', unit: '1.05457×10⁻³⁴ J·s' },
-                    { symbol: 'Ψ', name: 'Quantum Wavefunction', unit: 'State Amplitude' },
-                    { symbol: 'Ĥ', name: 'Hamiltonian Operator', unit: 'Total Energy Operator' }
-                ],
-                example: {
-                    problem: 'Determine the energy $E_1$ of an electron in a 1D box of width $L = 1\\text{ nm}$.',
-                    solutionSteps: [
-                        'Energy level $E_n = \\frac{n^2 h^2}{8 m L^2}$. For $n=1, m = 9.109 \\times 10^{-31}\\text{ kg}, L = 10^{-9}\\text{ m}$.',
-                        '$E_1 = \\frac{1^2 \\times (6.626 \\times 10^{-34})^2}{8 \\times 9.109 \\times 10^{-31} \\times 10^{-18}} \\approx 6.02 \\times 10^{-19}\\text{ J} \\approx 3.76\\text{ eV}$.'
-                    ]
-                },
-                calculator: {
-                    inputs: [
-                        { id: 'n', label: 'Quantum State n', default: 1 },
-                        { id: 'L_nm', label: 'Box Width L (nm)', default: 1 }
-                    ],
-                    compute: (vals) => {
-                        const n = parseInt(vals.n) || 1;
-                        const L = (parseFloat(vals.L_nm) || 1) * 1e-9;
-                        const h = 6.62607015e-34;
-                        const m = 9.1093837e-31;
-                        const E_j = (n * n * h * h) / (8 * m * L * L);
-                        const E_ev = E_j / 1.602176634e-19;
-                        return { label: 'Energy Level (E_n)', value: `${E_ev.toFixed(3)} eV (${E_j.toExponential(3)} J)`, unit: '' };
-                    }
-                }
-            },
-            {
-                id: 'heisenberg-uncertainty',
-                title: 'Heisenberg Uncertainty Principle',
-                category: 'Quantum Mechanics',
-                latex: '\\Delta x \\cdot \\Delta p \\ge \\frac{\\hbar}{2}',
-                description: 'States a fundamental limit to the precision with which certain pairs of physical properties (position and momentum) can be known.',
-                variables: [
-                    { symbol: 'Δx', name: 'Uncertainty in Position', unit: 'Meters (m)' },
-                    { symbol: 'Δp', name: 'Uncertainty in Momentum', unit: 'kg·m/s' },
-                    { symbol: 'ℏ', name: 'Reduced Planck Constant', unit: '1.05457×10⁻³⁴ J·s' }
-                ],
-                example: {
-                    problem: 'If an electron\'s position is known to within 0.1 nm ($10^{-10}$ m), find the minimum uncertainty in its velocity.',
-                    solutionSteps: [
-                        '$\\Delta p \\ge \\frac{\\hbar}{2 \\Delta x} = \\frac{1.05457 \\times 10^{-34}}{2 \\times 10^{-10}} = 5.27 \\times 10^{-25}\\text{ kg m/s}$.',
-                        'Divide by electron mass $m_e = 9.109 \\times 10^{-31}\\text{ kg}$ to get velocity uncertainty:',
-                        '$\\Delta v \\ge \\frac{5.27 \\times 10^{-25}}{9.109 \\times 10^{-31}} \\approx 5.79 \\times 10^5\\text{ m/s}$.'
-                    ]
-                },
-                calculator: {
-                    inputs: [{ id: 'dx_nm', label: 'Position Uncertainty Δx (nm)', default: 0.1 }],
-                    compute: (vals) => {
-                        const dx = (parseFloat(vals.dx_nm) || 0.1) * 1e-9;
-                        const hbar = 1.054571817e-34;
-                        const me = 9.1093837e-31;
-                        const dp = hbar / (2 * dx);
-                        const dv = dp / me;
-                        return { label: 'Min Velocity Uncertainty (Δv)', value: dv.toExponential(3), unit: 'm/s' };
-                    }
-                }
-            },
-            {
-                id: 'maxwell-gauss',
-                title: 'Maxwell\'s First Law (Gauss\'s Law)',
-                category: 'Electromagnetism',
-                latex: '\\nabla \\cdot \\mathbf{E} = \\frac{\\rho}{\\varepsilon_0}',
-                description: 'Relates the electric flux through a closed surface to the net electric charge enclosed within that surface.',
-                variables: [
-                    { symbol: 'E', name: 'Electric Field', unit: 'N/C or V/m' },
-                    { symbol: 'ρ', name: 'Volume Charge Density', unit: 'Coulombs/m³' },
-                    { symbol: 'ε₀', name: 'Vacuum Permittivity', unit: '8.85418×10⁻¹² F/m' }
-                ],
-                example: {
-                    problem: 'Determine electric field divergence given charge density $\\rho = 1.77 \\times 10^{-11}\\text{ C/m}^3$.',
-                    solutionSteps: [
-                        'Apply Gauss\'s Law differential form: $\\nabla \\cdot \\mathbf{E} = \\frac{\\rho}{\\varepsilon_0}$.',
-                        '$\\nabla \\cdot \\mathbf{E} = \\frac{1.77 \\times 10^{-11}}{8.854 \\times 10^{-12}} \\approx 2.0\\text{ V/m}^2$.'
-                    ]
-                },
-                calculator: {
-                    inputs: [{ id: 'rho_pico', label: 'Charge Density ρ (pC/m³)', default: 17.7 }],
-                    compute: (vals) => {
-                        const rho = (parseFloat(vals.rho_pico) || 0) * 1e-12;
-                        const eps0 = 8.8541878128e-12;
-                        const divE = rho / eps0;
-                        return { label: 'Electric Divergence (∇·E)', value: divE.toFixed(3), unit: 'V/m²' };
-                    }
-                }
-            },
-            {
-                id: 'coulombs-law',
-                title: 'Coulomb\'s Law',
-                category: 'Electromagnetism',
-                latex: 'F = k_e \\frac{|q_1 q_2|}{r^2}',
-                description: 'Quantifies the electrostatic force of attraction or repulsion between two point charges.',
-                variables: [
-                    { symbol: 'F', name: 'Electrostatic Force', unit: 'Newtons (N)' },
-                    { symbol: 'q_1, q_2', name: 'Charges', unit: 'Coulombs (C)' },
-                    { symbol: 'r', name: 'Distance between charges', unit: 'Meters (m)' },
-                    { symbol: 'k_e', name: 'Coulomb Constant', unit: '8.98755×10⁹ N·m²/C²' }
-                ],
-                example: {
-                    problem: 'Calculate the force between two charges of +1 μC separated by 0.1 meters.',
-                    solutionSteps: [
-                        '$F = (8.988 \\times 10^9) \\times \\frac{(10^{-6}) \\times (10^{-6})}{(0.1)^2}$.',
-                        '$F = 8.988 \\times 10^9 \\times 10^{-10} = 0.8988\\text{ N}$.'
-                    ]
-                },
-                calculator: {
-                    inputs: [
-                        { id: 'q1_micro', label: 'Charge 1 (μC)', default: 1 },
-                        { id: 'q2_micro', label: 'Charge 2 (μC)', default: 1 },
-                        { id: 'r', label: 'Distance r (m)', default: 0.1 }
-                    ],
-                    compute: (vals) => {
-                        const q1 = (parseFloat(vals.q1_micro) || 0) * 1e-6;
-                        const q2 = (parseFloat(vals.q2_micro) || 0) * 1e-6;
-                        const r = parseFloat(vals.r) || 0.1;
-                        const ke = 8.9875517923e9;
-                        const F = (ke * Math.abs(q1 * q2)) / (r * r);
-                        return { label: 'Force (F)', value: F.toFixed(4), unit: 'N' };
-                    }
-                }
-            },
-            {
-                id: 'lorentz-force',
-                title: 'Lorentz Force Law',
-                category: 'Electromagnetism',
-                latex: '\\mathbf{F} = q \\left( \\mathbf{E} + \\mathbf{v} \\times \\mathbf{B} \\right)',
-                description: 'The combined force on a point charge due to electromagnetic fields.',
-                variables: [
-                    { symbol: 'F', name: 'Lorentz Force Vector', unit: 'Newtons (N)' },
-                    { symbol: 'q', name: 'Electric Charge', unit: 'Coulombs (C)' },
-                    { symbol: 'E', name: 'Electric Field', unit: 'V/m' },
-                    { symbol: 'v', name: 'Particle Velocity', unit: 'm/s' },
-                    { symbol: 'B', name: 'Magnetic Field', unit: 'Tesla (T)' }
-                ],
-                example: {
-                    problem: 'Find the magnetic force on a 1 C charge moving at 100 m/s perpendicular to a 2 T magnetic field.',
-                    solutionSteps: [
-                        'Perpendicular component: $F_B = q \\cdot v \\cdot B \\cdot \\sin(90^\\circ)$.',
-                        '$F_B = 1 \\times 100 \\times 2 = 200\\text{ Newtons}$.'
-                    ]
-                },
-                calculator: {
-                    inputs: [
-                        { id: 'q', label: 'Charge q (C)', default: 1 },
-                        { id: 'v', label: 'Velocity v (m/s)', default: 100 },
-                        { id: 'B', label: 'Magnetic Field B (T)', default: 2 }
-                    ],
-                    compute: (vals) => {
-                        const q = parseFloat(vals.q) || 0;
-                        const v = parseFloat(vals.v) || 0;
-                        const B = parseFloat(vals.B) || 0;
-                        const F = Math.abs(q * v * B);
-                        return { label: 'Magnetic Force (F_B)', value: F.toLocaleString(), unit: 'N' };
-                    }
-                }
-            },
-            {
-                id: 'entropy-second-law',
-                title: 'Second Law of Thermodynamics (Entropy)',
-                category: 'Thermodynamics',
-                latex: '\\Delta S = \\int \\frac{d Q_{\\text{rev}}}{T} \\ge 0',
-                description: 'Establishes that total entropy of an isolated system can never decrease over time.',
-                variables: [
-                    { symbol: 'ΔS', name: 'Entropy Change', unit: 'J/K' },
-                    { symbol: 'Q_rev', name: 'Reversible Heat Transfer', unit: 'Joules (J)' },
-                    { symbol: 'T', name: 'Absolute Temperature', unit: 'Kelvin (K)' }
-                ],
-                example: {
-                    problem: 'Calculate the entropy increase when 500 J of heat is added to a reservoir at 300 K.',
-                    solutionSteps: [
-                        '$\\Delta S = \\frac{Q}{T} = \\frac{500\\text{ J}}{300\\text{ K}}$.',
-                        '$\\Delta S = 1.667\\text{ J/K}$.'
-                    ]
-                },
-                calculator: {
-                    inputs: [
-                        { id: 'Q', label: 'Heat Transferred Q (Joules)', default: 500 },
-                        { id: 'T', label: 'Temperature T (Kelvin)', default: 300 }
-                    ],
-                    compute: (vals) => {
-                        const Q = parseFloat(vals.Q) || 0;
-                        const T = parseFloat(vals.T) || 1;
-                        const dS = Q / T;
-                        return { label: 'Entropy Change (ΔS)', value: dS.toFixed(3), unit: 'J/K' };
-                    }
-                }
-            },
-            {
-                id: 'ideal-gas-law',
-                title: 'Ideal Gas Law',
-                category: 'Thermodynamics',
-                latex: 'P V = n R T',
-                description: 'The state equation for a hypothetical ideal gas.',
-                variables: [
-                    { symbol: 'P', name: 'Pressure', unit: 'Pascals (Pa)' },
-                    { symbol: 'V', name: 'Volume', unit: 'm³' },
-                    { symbol: 'n', name: 'Amount of Gas', unit: 'Moles (mol)' },
-                    { symbol: 'R', name: 'Gas Constant', unit: '8.314 J/(mol·K)' },
-                    { symbol: 'T', name: 'Temperature', unit: 'Kelvin (K)' }
-                ],
-                example: {
-                    problem: 'Find pressure of 2 moles of gas in a 0.05 m³ container at 300 K.',
-                    solutionSteps: [
-                        '$P = \\frac{n R T}{V} = \\frac{2 \\times 8.314 \\times 300}{0.05}$.',
-                        '$P = \\frac{4988.4}{0.05} = 99,768\\text{ Pa} \\approx 0.985\\text{ atm}$.'
-                    ]
-                },
-                calculator: {
-                    inputs: [
-                        { id: 'n', label: 'Moles (n)', default: 2 },
-                        { id: 'T', label: 'Temp (K)', default: 300 },
-                        { id: 'V', label: 'Volume (m³)', default: 0.05 }
-                    ],
-                    compute: (vals) => {
-                        const n = parseFloat(vals.n) || 0;
-                        const T = parseFloat(vals.T) || 0;
-                        const V = parseFloat(vals.V) || 1;
-                        const R = 8.314462;
-                        const P = (n * R * T) / V;
-                        return { label: 'Pressure (P)', value: `${P.toLocaleString(undefined, {maximumFractionDigits:1})} Pa (${(P/101325).toFixed(3)} atm)`, unit: '' };
-                    }
-                }
-            },
-            {
-                id: 'navier-stokes',
-                title: 'Navier-Stokes Equations',
-                category: 'Fluid Dynamics',
-                latex: '\\rho \\left( \\frac{\\partial \\mathbf{u}}{\\partial t} + \\mathbf{u} \\cdot \\nabla \\mathbf{u} \\right) = -\\nabla p + \\mu \\nabla^2 \\mathbf{u} + \\mathbf{f}',
-                description: 'Dictates the motion of viscous fluid substances based on Newton\'s second law.',
-                variables: [
-                    { symbol: 'ρ', name: 'Fluid Density', unit: 'kg/m³' },
-                    { symbol: 'u', name: 'Flow Velocity Vector', unit: 'm/s' },
-                    { symbol: 'p', name: 'Pressure', unit: 'Pa' },
-                    { symbol: 'μ', name: 'Dynamic Viscosity', unit: 'Pa·s' }
-                ],
-                example: {
-                    problem: 'Estimate viscous dissipation term $\\mu \\nabla^2 u$ for water ($\\mu = 0.001\\text{ Pa s}$) with velocity gradient curvature $10^4\\text{ m}^{-2}$.',
-                    solutionSteps: [
-                        'Dissipation $= \\mu \\times (\\text{curvature}) = 0.001 \\times 10^4$.',
-                        'Result $= 10\\text{ N/m}^3$.'
-                    ]
-                },
-                calculator: {
-                    inputs: [
-                        { id: 'mu', label: 'Viscosity μ (Pa·s)', default: 0.001 },
-                        { id: 'curv', label: 'Velocity Laplacian ∇²u (1/m²)', default: 10000 }
-                    ],
-                    compute: (vals) => {
-                        const mu = parseFloat(vals.mu) || 0;
-                        const curv = parseFloat(vals.curv) || 0;
-                        const f_visc = mu * curv;
-                        return { label: 'Viscous Force Density', value: f_visc.toFixed(2), unit: 'N/m³' };
-                    }
-                }
-            },
-            {
-                id: 'bernoulli-principle',
-                title: 'Bernoulli\'s Principle',
-                category: 'Fluid Dynamics',
-                latex: 'p + \\frac{1}{2}\\rho v^2 + \\rho g h = \\text{constant}',
-                description: 'An expression of energy conservation for flowing fluids.',
-                variables: [
-                    { symbol: 'p', name: 'Static Pressure', unit: 'Pa' },
-                    { symbol: 'ρ', name: 'Fluid Density', unit: 'kg/m³' },
-                    { symbol: 'v', name: 'Fluid Velocity', unit: 'm/s' },
-                    { symbol: 'h', name: 'Elevation Height', unit: 'm' }
-                ],
-                example: {
-                    problem: 'Calculate dynamic pressure $\\frac{1}{2}\\rho v^2$ for air ($\\rho = 1.225\\text{ kg/m}^3$) at $30\\text{ m/s}$.',
-                    solutionSteps: [
-                        'Dynamic Pressure $= 0.5 \\times 1.225 \\times (30)^2 = 0.5 \\times 1.225 \\times 900$.',
-                        'Result $= 551.25\\text{ Pa}$.'
-                    ]
-                },
-                calculator: {
-                    inputs: [
-                        { id: 'rho', label: 'Density ρ (kg/m³)', default: 1.225 },
-                        { id: 'v', label: 'Velocity v (m/s)', default: 30 }
-                    ],
-                    compute: (vals) => {
-                        const rho = parseFloat(vals.rho) || 0;
-                        const v = parseFloat(vals.v) || 0;
-                        const q = 0.5 * rho * v * v;
-                        return { label: 'Dynamic Pressure', value: q.toFixed(2), unit: 'Pa' };
-                    }
-                }
-            },
-            {
-                id: 'schwarzschild-radius',
-                title: 'Schwarzschild Radius',
-                category: 'Astrophysics',
-                latex: 'r_s = \\frac{2 G M}{c^2}',
-                description: 'The physical radius defining the event horizon of a non-rotating gravitational mass.',
-                variables: [
-                    { symbol: 'r_s', name: 'Schwarzschild Radius', unit: 'Meters (m)' },
-                    { symbol: 'G', name: 'Gravitational Constant', unit: '6.674×10⁻¹¹ m³/(kg·s²)' },
-                    { symbol: 'M', name: 'Mass of Object', unit: 'Kilograms (kg)' },
-                    { symbol: 'c', name: 'Speed of Light', unit: '2.998×10⁸ m/s' }
-                ],
-                example: {
-                    problem: 'Find the event horizon radius if the Earth ($M \\approx 5.972 \\times 10^{24}\\text{ kg}$) were compressed into a black hole.',
-                    solutionSteps: [
-                        '$r_s = \\frac{2 \\times (6.6743 \\times 10^{-11}) \\times (5.972 \\times 10^{24})}{(2.9979 \\times 10^8)^2}$.',
-                        '$r_s \\approx 0.00887\\text{ meters} \\approx 8.87\\text{ millimeters}$.'
-                    ]
-                },
-                calculator: {
-                    inputs: [{ id: 'm_solar', label: 'Mass in Solar Masses (M☉)', default: 10 }],
-                    compute: (vals) => {
-                        const M = (parseFloat(vals.m_solar) || 1) * 1.989e30;
-                        const G = 6.6743e-11;
-                        const c = 299792458;
-                        const rs = (2 * G * M) / (c * c);
-                        return { label: 'Event Horizon Radius (r_s)', value: `${(rs/1000).toFixed(2)} km (${rs.toFixed(1)} m)`, unit: '' };
-                    }
-                }
-            },
-            {
-                id: 'hubble-law',
-                title: 'Hubble-Lemaître Law',
-                category: 'Astrophysics',
-                latex: 'v = H_0 \\cdot d',
-                description: 'States that galaxies recede from observers at velocities proportional to their distance.',
-                variables: [
-                    { symbol: 'v', name: 'Recessional Velocity', unit: 'km/s' },
-                    { symbol: 'H_0', name: 'Hubble Constant', unit: '~70 (km/s)/Mpc' },
-                    { symbol: 'd', name: 'Proper Distance', unit: 'Megaparsecs (Mpc)' }
-                ],
-                example: {
-                    problem: 'Estimate the recession speed of a galaxy located 100 Megaparsecs away.',
-                    solutionSteps: [
-                        '$v = 70\\text{ (km/s)/Mpc} \\times 100\\text{ Mpc}$.',
-                        '$v = 7,000\\text{ km/s}$.'
-                    ]
-                },
-                calculator: {
-                    inputs: [
-                        { id: 'd', label: 'Distance d (Mpc)', default: 100 },
-                        { id: 'H0', label: 'Hubble Const H₀ [(km/s)/Mpc]', default: 70 }
-                    ],
-                    compute: (vals) => {
-                        const d = parseFloat(vals.d) || 0;
-                        const H0 = parseFloat(vals.H0) || 70;
-                        const v = H0 * d;
-                        return { label: 'Recessional Speed (v)', value: v.toLocaleString(), unit: 'km/s' };
-                    }
-                }
-            },
-            {
-                id: 'eulers-identity',
-                title: 'Euler\'s Identity',
-                category: 'Calculus & Analysis',
-                latex: 'e^{i \\pi} + 1 = 0',
-                description: 'Considered the most beautiful equation in mathematics, linking five fundamental mathematical constants.',
-                variables: [
-                    { symbol: 'e', name: 'Euler\'s Number', unit: '2.71828...' },
-                    { symbol: 'i', name: 'Imaginary Unit', unit: '√(-1)' },
-                    { symbol: 'π', name: 'Archimedes\' Constant', unit: '3.14159...' },
-                    { symbol: '1, 0', name: 'Identity Constants', unit: 'Arithmetic basics' }
-                ],
-                example: {
-                    problem: 'Derive from Euler\'s Formula $e^{i\\theta} = \\cos\\theta + i\\sin\\theta$ for $\\theta = \\pi$.',
-                    solutionSteps: [
-                        '$e^{i\\pi} = \\cos(\\pi) + i\\sin(\\pi)$.',
-                        'Since $\\cos(\\pi) = -1$ and $\\sin(\\pi) = 0$, $e^{i\\pi} = -1 + 0i = -1$.',
-                        'Adding 1 yields $e^{i\\pi} + 1 = 0$.'
-                    ]
-                },
-                calculator: {
-                    inputs: [{ id: 'theta_deg', label: 'Angle θ (Degrees)', default: 180 }],
-                    compute: (vals) => {
-                        const deg = parseFloat(vals.theta_deg) || 0;
-                        const rad = (deg * Math.PI) / 180;
-                        const re = Math.cos(rad).toFixed(4);
-                        const im = Math.sin(rad).toFixed(4);
-                        return { label: 'e^(iθ) Value', value: `${re} + ${im}i`, unit: '' };
-                    }
-                }
-            },
-            {
-                id: 'fundamental-calculus',
-                title: 'Fundamental Theorem of Calculus',
-                category: 'Calculus & Analysis',
-                latex: '\\int_{a}^{b} f(x)\\, dx = F(b) - F(a)',
-                description: 'Establishes the inverse relationship between differentiation and integration.',
-                variables: [
-                    { symbol: 'f(x)', name: 'Continuous Integrand', unit: 'Function' },
-                    { symbol: 'F(x)', name: 'Antiderivative', unit: 'F\'(x) = f(x)' },
-                    { symbol: 'a, b', name: 'Integration Limits', unit: 'Interval' }
-                ],
-                example: {
-                    problem: 'Compute $\\int_{1}^{3} x^2 \\, dx$.',
-                    solutionSteps: [
-                        'Antiderivative $F(x) = \\frac{x^3}{3}$.',
-                        'Evaluate $F(3) - F(1) = \\frac{27}{3} - \\frac{1}{3} = 9 - 0.3333 = 8.6667$.'
-                    ]
-                },
-                calculator: {
-                    inputs: [
-                        { id: 'a', label: 'Lower limit a', default: 1 },
-                        { id: 'b', label: 'Upper limit b', default: 3 },
-                        { id: 'p', label: 'Power p in x^p', default: 2 }
-                    ],
-                    compute: (vals) => {
-                        const a = parseFloat(vals.a) || 0;
-                        const b = parseFloat(vals.b) || 0;
-                        const p = parseFloat(vals.p) || 1;
-                        const antideriv = (x) => Math.pow(x, p + 1) / (p + 1);
-                        const res = antideriv(b) - antideriv(a);
-                        return { label: 'Definite Integral', value: res.toFixed(4), unit: '' };
-                    }
-                }
-            },
-            {
-                id: 'fourier-transform',
-                title: 'Continuous Fourier Transform',
-                category: 'Calculus & Analysis',
-                latex: '\\hat{f}(\\xi) = \\int_{-\\infty}^{\\infty} f(t) e^{-i 2\\pi \\xi t}\\, dt',
-                description: 'Decomposes a function of time into the individual frequencies that make it up.',
-                variables: [
-                    { symbol: 'f(t)', name: 'Time-domain signal', unit: 'Amplitude' },
-                    { symbol: 'f̂(ξ)', name: 'Frequency-domain representation', unit: 'Spectrum' },
-                    { symbol: 'ξ', name: 'Frequency', unit: 'Hertz (Hz)' }
-                ],
-                example: {
-                    problem: 'Transform a rectangular pulse of width $T$.',
-                    solutionSteps: [
-                        'The Fourier Transform of $\\text{rect}(t/T)$ yields $T \\cdot \\text{sinc}(\\pi \\xi T)$.'
-                    ]
-                },
-                calculator: {
-                    inputs: [
-                        { id: 'freq', label: 'Frequency ξ (Hz)', default: 2 },
-                        { id: 'width', label: 'Pulse Width T (s)', default: 1 }
-                    ],
-                    compute: (vals) => {
-                        const freq = parseFloat(vals.freq) || 1;
-                        const T = parseFloat(vals.width) || 1;
-                        const arg = Math.PI * freq * T;
-                        const sinc = arg === 0 ? 1 : Math.sin(arg) / arg;
-                        const spectrum = T * sinc;
-                        return { label: 'Spectral Magnitude f̂(ξ)', value: spectrum.toFixed(4), unit: '' };
-                    }
-                }
+                id: 'normal-distribution',
+                title: 'Normal Distribution Probability Density',
+                category: 'Statistics',
+                latex: 'f(x) = \\frac{1}{\\sigma \\sqrt{2\\pi}} e^{-\\frac{1}{2}\\left(\\frac{x-\\mu}{\\sigma}\\right)^2}',
+                desc: 'Gaussian continuous probability distribution formula.'
             },
             {
                 id: 'bayes-theorem',
-                title: 'Bayes\' Theorem',
-                category: 'Probability & Statistics',
-                latex: 'P(A \\mid B) = \\frac{P(B \\mid A) \\cdot P(A)}{P(B)}',
-                description: 'Calculates conditional probability based on prior knowledge of conditions related to the event.',
-                variables: [
-                    { symbol: 'P(A|B)', name: 'Posterior Probability', unit: 'Probability [0, 1]' },
-                    { symbol: 'P(B|A)', name: 'Likelihood', unit: 'Probability [0, 1]' },
-                    { symbol: 'P(A)', name: 'Prior Probability', unit: 'Probability [0, 1]' },
-                    { symbol: 'P(B)', name: 'Marginal Likelihood', unit: 'Probability [0, 1]' }
-                ],
-                example: {
-                    problem: 'Given prior $P(A)=0.01$, test accuracy $P(B|A)=0.9$, false positive $P(B|\\neg A)=0.05$, find $P(A|B)$.',
-                    solutionSteps: [
-                        '$P(B) = (0.9 \\times 0.01) + (0.05 \\times 0.99) = 0.009 + 0.0495 = 0.0585$.',
-                        '$P(A|B) = \\frac{0.009}{0.0585} \\approx 0.1538\\text{ (15.38\\%)}.'
-                    ]
-                },
-                calculator: {
-                    inputs: [
-                        { id: 'prior', label: 'Prior P(A)', default: 0.01 },
-                        { id: 'sens', label: 'Likelihood P(B|A)', default: 0.9 },
-                        { id: 'fp', label: 'False Pos P(B|~A)', default: 0.05 }
-                    ],
-                    compute: (vals) => {
-                        const pA = parseFloat(vals.prior) || 0.01;
-                        const pBA = parseFloat(vals.sens) || 0.9;
-                        const pB_notA = parseFloat(vals.fp) || 0.05;
-                        const pB = (pBA * pA) + (pB_notA * (1 - pA));
-                        const res = (pBA * pA) / pB;
-                        return { label: 'Posterior P(A|B)', value: `${(res * 100).toFixed(2)}% (${res.toFixed(4)})`, unit: '' };
-                    }
-                }
-            },
-            {
-                id: 'normal-distribution',
-                title: 'Gaussian (Normal) Distribution',
-                category: 'Probability & Statistics',
-                latex: 'f(x) = \\frac{1}{\\sigma \\sqrt{2\\pi}} \\exp\\left( -\\frac{1}{2} \\left( \\frac{x - \\mu}{\\sigma} \\right)^2 \\right)',
-                description: 'The standard bell curve probability density function for continuous random variables.',
-                variables: [
-                    { symbol: 'μ', name: 'Mean / Expectation', unit: 'Center' },
-                    { symbol: 'σ', name: 'Standard Deviation', unit: 'Spread' },
-                    { symbol: 'x', name: 'Evaluation Point', unit: 'Variable' }
-                ],
-                example: {
-                    problem: 'Find probability density at mean $x = \\mu = 0$ for standard normal ($\\sigma = 1$).',
-                    solutionSteps: [
-                        '$f(0) = \\frac{1}{1 \\cdot \\sqrt{2\\pi}} e^0 = \\frac{1}{\\sqrt{2\\pi}} \\approx 0.3989$.'
-                    ]
-                },
-                calculator: {
-                    inputs: [
-                        { id: 'x', label: 'Point x', default: 0 },
-                        { id: 'mu', label: 'Mean μ', default: 0 },
-                        { id: 'sigma', label: 'Std Dev σ', default: 1 }
-                    ],
-                    compute: (vals) => {
-                        const x = parseFloat(vals.x) || 0;
-                        const mu = parseFloat(vals.mu) || 0;
-                        const sigma = parseFloat(vals.sigma) || 1;
-                        const coef = 1 / (sigma * Math.sqrt(2 * Math.PI));
-                        const exponent = -0.5 * Math.pow((x - mu) / sigma, 2);
-                        const pdf = coef * Math.exp(exponent);
-                        return { label: 'Density f(x)', value: pdf.toFixed(5), unit: '' };
-                    }
-                }
-            },
-            {
-                id: 'pythagorean-theorem',
-                title: 'Pythagorean Theorem',
-                category: 'Geometry & Trigonometry',
-                latex: 'a^2 + b^2 = c^2',
-                description: 'Relates the three sides of a right-angled triangle.',
-                variables: [
-                    { symbol: 'a, b', name: 'Legs of right triangle', unit: 'Length' },
-                    { symbol: 'c', name: 'Hypotenuse', unit: 'Length' }
-                ],
-                example: {
-                    problem: 'Find hypotenuse for $a = 3, b = 4$.',
-                    solutionSteps: [
-                        '$c = \\sqrt{3^2 + 4^2} = \\sqrt{9 + 16} = \\sqrt{25} = 5$.'
-                    ]
-                },
-                calculator: {
-                    inputs: [
-                        { id: 'a', label: 'Leg a', default: 3 },
-                        { id: 'b', label: 'Leg b', default: 4 }
-                    ],
-                    compute: (vals) => {
-                        const a = parseFloat(vals.a) || 0;
-                        const b = parseFloat(vals.b) || 0;
-                        const c = Math.sqrt(a * a + b * b);
-                        return { label: 'Hypotenuse (c)', value: c.toFixed(3), unit: '' };
-                    }
-                }
+                title: "Bayes' Theorem",
+                category: 'Statistics',
+                latex: 'P(A|B) = \\frac{P(B|A) P(A)}{P(B)}',
+                desc: 'Calculates conditional probability.'
             }
         ];
 
-        // Persistent Favorites State
-        let favorites = JSON.parse(localStorage.getItem('physmath_favs') || '[]');
-        let selectedCategory = 'All';
-        let showFavsOnly = false;
-        let expandedCardId = null;
+        // State Management
+        let bookmarks = JSON.parse(localStorage.getItem('vault_bookmarks') || '[]');
+        let activeTab = 'all';
+        let searchQuery = '';
 
-        // On DOM Load Init
-        document.addEventListener('DOMContentLoaded', () => {
-            renderCategories();
-            renderEquations();
-            updateFavCount();
-        });
+        // DOM Elements
+        const gridEl = document.getElementById('equationGrid');
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const tabsListEl = document.getElementById('tabsList');
+        const totalFormulasEl = document.getElementById('totalFormulas');
+        const savedCountEl = document.getElementById('savedCount');
+        const toast = document.getElementById('toast');
 
-        // Render Category Filter Buttons
-        function renderCategories() {
-            const categories = ['All', ...new Set(equations.map(eq => eq.category))];
-            const container = document.getElementById('categoryContainer');
-            
-            container.innerHTML = categories.map(cat => `
-                <button onclick="setCategory('${cat}')" 
-                    class="category-btn whitespace-nowrap px-3.5 py-1.5 rounded-xl text-xs font-medium transition border ${
-                        selectedCategory === cat && !showFavsOnly
-                        ? 'bg-brand-600 border-brand-500 text-white shadow-lg shadow-brand-500/20' 
-                        : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800'
-                    }">
-                    ${cat}
-                </button>
-            `).join('');
+        // Categories list for tabs
+        const categories = ['all', 'bookmarks', 'Mechanics', 'Geometry', 'Calculus', 'Thermodynamics', 'Electromagnetism', 'Relativity', 'Quantum', 'Statistics'];
+
+        function renderTabs() {
+            tabsListEl.innerHTML = '';
+            categories.forEach(cat => {
+                const count = cat === 'all' ? equations.length :
+                              cat === 'bookmarks' ? bookmarks.length :
+                              equations.filter(e => e.category === cat).length;
+
+                const label = cat === 'all' ? 'All Disciplines' :
+                              cat === 'bookmarks' ? 'Bookmarks' : cat;
+
+                const btn = document.createElement('button');
+                btn.className = `tab-btn ${activeTab === cat ? 'active' : ''}`;
+                btn.innerHTML = `${label} <span class="count">${count}</span>`;
+                btn.onclick = () => {
+                    activeTab = cat;
+                    renderVault();
+                };
+                tabsListEl.appendChild(btn);
+            });
         }
 
-        // Set Filter Category
-        function setCategory(cat) {
-            selectedCategory = cat;
-            showFavsOnly = false;
-            updateFavToggleStyle();
-            renderCategories();
-            renderEquations();
-        }
+        function renderVault() {
+            renderTabs();
+            gridEl.innerHTML = '';
 
-        // Bookmark / Favorite System
-        function toggleFavorite(id, event) {
-            if (event) event.stopPropagation();
-            if (favorites.includes(id)) {
-                favorites = favorites.filter(favId => favId !== id);
-                showToast("Removed from bookmarks");
-            } else {
-                favorites.push(id);
-                showToast("Saved to bookmarks!");
-            }
-            localStorage.setItem('physmath_favs', JSON.stringify(favorites));
-            updateFavCount();
-            renderEquations();
-        }
+            const filtered = equations.filter(eq => {
+                const matchesTab = 
+                    activeTab === 'all' ? true :
+                    activeTab === 'bookmarks' ? bookmarks.includes(eq.id) :
+                    eq.category === activeTab;
 
-        function updateFavCount() {
-            document.getElementById('favCount').textContent = favorites.length;
-        }
-
-        function toggleFavoritesFilter() {
-            showFavsOnly = !showFavsOnly;
-            updateFavToggleStyle();
-            renderCategories();
-            renderEquations();
-        }
-
-        function updateFavToggleStyle() {
-            const btn = document.getElementById('favToggleBtn');
-            if (showFavsOnly) {
-                btn.classList.add('bg-amber-500/20', 'border-amber-500/40', 'text-amber-300');
-            } else {
-                btn.classList.remove('bg-amber-500/20', 'border-amber-500/40', 'text-amber-300');
-            }
-        }
-
-        // Search Handlers
-        function filterEquations() {
-            const searchVal = document.getElementById('searchInput').value.trim();
-            const clearBtn = document.getElementById('clearSearchBtn');
-            clearBtn.classList.toggle('hidden', searchVal.length === 0);
-            renderEquations();
-        }
-
-        function clearSearch() {
-            document.getElementById('searchInput').value = '';
-            document.getElementById('clearSearchBtn').classList.add('hidden');
-            renderEquations();
-        }
-
-        function resetFilters() {
-            selectedCategory = 'All';
-            showFavsOnly = false;
-            document.getElementById('searchInput').value = '';
-            document.getElementById('clearSearchBtn').classList.add('hidden');
-            updateFavToggleStyle();
-            renderCategories();
-            renderEquations();
-        }
-
-        // Render Equation Cards & Live Execution
-        function renderEquations() {
-            const searchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
-            const sortBy = document.getElementById('sortSelect').value;
-            const grid = document.getElementById('equationGrid');
-            const noResults = document.getElementById('noResults');
-
-            let filtered = equations.filter(eq => {
-                const matchesCategory = selectedCategory === 'All' || eq.category === selectedCategory;
-                const matchesFav = !showFavsOnly || favorites.includes(eq.id);
-                const matchesSearch = searchQuery === '' || 
+                const matchesSearch = 
                     eq.title.toLowerCase().includes(searchQuery) ||
-                    eq.latex.toLowerCase().includes(searchQuery) ||
                     eq.category.toLowerCase().includes(searchQuery) ||
-                    eq.description.toLowerCase().includes(searchQuery) ||
-                    eq.variables.some(v => v.name.toLowerCase().includes(searchQuery) || v.symbol.toLowerCase().includes(searchQuery));
-                
-                return matchesCategory && matchesFav && matchesSearch;
+                    eq.desc.toLowerCase().includes(searchQuery) ||
+                    eq.latex.toLowerCase().includes(searchQuery);
+
+                return matchesTab && matchesSearch;
             });
 
-            // Sorting
-            if (sortBy === 'name') {
-                filtered.sort((a, b) => a.title.localeCompare(b.title));
-            } else if (sortBy === 'category') {
-                filtered.sort((a, b) => a.category.localeCompare(b.category));
-            }
-
-            // Stats Counter Update
-            document.getElementById('statsCounter').textContent = 
-                `Showing ${filtered.length} equation${filtered.length === 1 ? '' : 's'} across ${new Set(equations.map(e=>e.category)).size} disciplines`;
-
             if (filtered.length === 0) {
-                grid.innerHTML = '';
-                noResults.classList.remove('hidden');
+                gridEl.innerHTML = `<div class="no-results">No equations found matching your search criteria.</div>`;
+                updateStats();
                 return;
             }
 
-            noResults.classList.add('hidden');
-
-            grid.innerHTML = filtered.map(eq => {
-                const isExpanded = expandedCardId === eq.id;
-                const isFav = favorites.includes(eq.id);
-
-                return `
-                    <div class="bg-slate-900/80 border border-slate-800 hover:border-slate-700 rounded-2xl p-5 sm:p-6 transition-all duration-200 flex flex-col justify-between shadow-xl relative group">
-                        
-                        <!-- Top Header -->
-                        <div class="space-y-3">
-                            <div class="flex items-center justify-between gap-2">
-                                <span class="px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-brand-500/10 text-brand-300 border border-brand-500/20">
-                                    ${eq.category}
-                                </span>
-                                
-                                <div class="flex items-center space-x-2">
-                                    <button onclick="toggleFavorite('${eq.id}', event)" 
-                                        class="p-1.5 rounded-lg text-slate-400 hover:text-amber-400 transition" 
-                                        title="${isFav ? 'Remove Bookmark' : 'Bookmark Equation'}">
-                                        <i class="${isFav ? 'fa-solid text-amber-400' : 'fa-regular'} fa-bookmark"></i>
-                                    </button>
-                                    <button onclick="copyLatex('${eq.latex.replace(/\\/g, '\\\\')}')" 
-                                        class="text-[11px] text-slate-400 hover:text-brand-300 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-750 border border-slate-700/50 transition flex items-center gap-1.5">
-                                        <i class="fa-regular fa-copy"></i> LaTeX
-                                    </button>
-                                </div>
-                            </div>
-
-                            <h3 class="text-lg sm:text-xl font-bold text-white tracking-tight">${eq.title}</h3>
-                            <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">${eq.description}</p>
+            filtered.forEach(eq => {
+                const isBookmarked = bookmarks.includes(eq.id);
+                const card = document.createElement('div');
+                card.className = 'eq-card';
+                card.innerHTML = `
+                    <div class="card-header">
+                        <div>
+                            <div class="eq-title">${eq.title}</div>
+                            <div class="eq-cat">${eq.category}</div>
                         </div>
-
-                        <!-- Rendered Math Formula Display Box -->
-                        <div class="my-4 py-3 px-4 bg-slate-950/90 border border-slate-800 rounded-xl flex items-center justify-center text-center shadow-inner overflow-x-auto">
-                            <div class="katex-render text-base sm:text-lg font-math text-indigo-200">\\[${eq.latex}\\]</div>
-                        </div>
-
-                        <!-- Card Footer Controls -->
-                        <div class="pt-2 border-t border-slate-800 flex items-center justify-between">
-                            <span class="text-[11px] text-slate-500">
-                                <i class="fa-solid fa-calculator text-brand-400 me-1"></i> Interactive Solver
-                            </span>
-                            <button onclick="toggleExpand('${eq.id}')" 
-                                class="text-xs font-medium text-brand-400 hover:text-brand-300 flex items-center gap-1 bg-brand-500/10 hover:bg-brand-500/20 px-3 py-1.5 rounded-xl border border-brand-500/20 transition">
-                                ${isExpanded ? 'Collapse <i class="fa-solid fa-chevron-up text-[10px]"></i>' : 'Solve & Details <i class="fa-solid fa-chevron-down text-[10px]"></i>'}
+                        <div class="card-actions">
+                            <button class="icon-btn ${isBookmarked ? 'bookmarked' : ''}" onclick="toggleBookmark('${eq.id}')" title="Bookmark">
+                                <i data-lucide="bookmark" style="width: 18px; height: 18px;"></i>
+                            </button>
+                            <button class="icon-btn" onclick="copyLatex(\`${escapeLatex(eq.latex)}\`)" title="Copy LaTeX">
+                                <i data-lucide="copy" style="width: 18px; height: 18px;"></i>
                             </button>
                         </div>
-
-                        <!-- Expandable Drawer for Variables & Solver -->
-                        ${isExpanded ? renderExpandedSection(eq) : ''}
-
                     </div>
+                    
+                    <div class="math-display">
+                        \\[ ${eq.latex} \\]
+                    </div>
+                    
+                    <p class="eq-desc">${eq.desc}</p>
+                    
+                    ${eq.solver ? renderSolverHTML(eq) : ''}
                 `;
-            }).join('');
-
-            // Render LaTeX Math with KaTeX
-            renderMathInElement(document.body, {
-                delimiters: [
-                    {left: '$$', right: '$$', display: true},
-                    {left: '\\[', right: '\\]', display: true},
-                    {left: '$', right: '$', display: false},
-                    {left: '\\(', right: '\\)', display: false}
-                ],
-                throwOnError: false
+                gridEl.appendChild(card);
             });
 
-            // Initialize dynamic solvers for open cards
-            if (expandedCardId) {
-                const activeEq = equations.find(e => e.id === expandedCardId);
-                if (activeEq) runCalculator(activeEq.id);
+            updateStats();
+            lucide.createIcons();
+            
+            if (window.renderMathInElement) {
+                renderMathInElement(gridEl);
             }
         }
 
-        function toggleExpand(id) {
-            expandedCardId = expandedCardId === id ? null : id;
-            renderEquations();
+        function escapeLatex(latexStr) {
+            return latexStr.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
         }
 
-        // Expanded Drawer HTML Template
-        function renderExpandedSection(eq) {
+        function renderSolverHTML(eq) {
+            const inputsHTML = eq.solver.inputs.map(ip => `
+                <div class="input-group">
+                    <label>${ip.label}</label>
+                    <input type="number" step="any" id="input-${eq.id}-${ip.name}" value="${ip.default}">
+                </div>
+            `).join('');
+
             return `
-                <div class="mt-4 pt-4 border-t border-slate-800 space-y-5 animate-fadeIn">
-                    
-                    <!-- 1. Variables Definition Glossary -->
-                    <div class="space-y-2">
-                        <h4 class="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-                            <i class="fa-solid fa-list-check text-brand-400"></i> Variable Glossary
-                        </h4>
-                        <div class="bg-slate-950/60 rounded-xl p-3 border border-slate-800/80 text-xs space-y-2">
-                            ${eq.variables.map(v => `
-                                <div class="flex items-start justify-between border-b border-slate-800/50 pb-1.5 last:border-0 last:pb-0">
-                                    <span class="font-bold text-brand-300 font-mono">${v.symbol}</span>
-                                    <div class="text-right">
-                                        <div class="text-slate-200 font-medium">${v.name}</div>
-                                        <div class="text-slate-500 text-[10px]">${v.unit}</div>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-
-                    <!-- 2. Interactive Calculator Engine -->
-                    <div class="space-y-3 bg-slate-950/80 p-4 rounded-xl border border-brand-500/20 shadow-inner">
-                        <h4 class="text-[11px] font-bold uppercase tracking-wider text-brand-400 flex items-center gap-1.5">
-                            <i class="fa-solid fa-sliders text-brand-400"></i> Live Parameter Solver
-                        </h4>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5" id="calc-inputs-${eq.id}">
-                            ${eq.calculator.inputs.map(inp => `
-                                <div>
-                                    <label class="block text-[11px] font-medium text-slate-400 mb-1">${inp.label}</label>
-                                    <input type="number" step="any" id="inp-${eq.id}-${inp.id}" value="${inp.default}" 
-                                        oninput="runCalculator('${eq.id}')"
-                                        class="w-full bg-slate-900 border border-slate-700/80 rounded-lg px-2.5 py-1 text-xs text-white focus:outline-none focus:ring-1 focus:ring-brand-500 font-mono">
-                                </div>
-                            `).join('')}
-                        </div>
-
-                        <!-- Computation Output Box -->
-                        <div class="mt-2 p-2.5 bg-brand-950/30 border border-brand-500/30 rounded-lg flex items-center justify-between">
-                            <span class="text-xs font-semibold text-slate-300" id="calc-res-label-${eq.id}">Output</span>
-                            <span class="text-xs sm:text-sm font-bold font-mono text-brand-300" id="calc-res-val-${eq.id}">0</span>
-                        </div>
-                    </div>
-
-                    <!-- 3. Worked Example with LaTeX steps -->
-                    <div class="space-y-2">
-                        <h4 class="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-                            <i class="fa-solid fa-book-open text-brand-400"></i> Worked Example
-                        </h4>
-                        <div class="bg-slate-950/60 rounded-xl p-3 border border-slate-800/80 text-xs space-y-2">
-                            <p class="text-slate-200 font-medium italic">"${eq.example.problem}"</p>
-                            <div class="space-y-1 text-slate-400 border-l-2 border-brand-500/40 pl-2.5">
-                                ${eq.example.solutionSteps.map((step, idx) => `
-                                    <div><strong class="text-slate-300">Step ${idx+1}:</strong> ${step}</div>
-                                `).join('')}
-                            </div>
-                        </div>
-                    </div>
-
+                <div class="solver-box">
+                    <div class="solver-title">Interactive Calculator</div>
+                    <div class="solver-inputs">${inputsHTML}</div>
+                    <button class="calc-btn" onclick="runSolver('${eq.id}')">Calculate</button>
+                    <div class="calc-result" id="result-${eq.id}">Result will appear here</div>
                 </div>
             `;
         }
 
-        // Live Math Computation Engine
-        function runCalculator(eqId) {
+        window.runSolver = function(eqId) {
             const eq = equations.find(e => e.id === eqId);
-            if (!eq || !eq.calculator) return;
+            if (!eq || !eq.solver) return;
 
-            const values = {};
-            eq.calculator.inputs.forEach(inp => {
-                const el = document.getElementById(`inp-${eqId}-${inp.id}`);
-                values[inp.id] = el ? el.value : inp.default;
+            const v = {};
+            eq.solver.inputs.forEach(ip => {
+                const el = document.getElementById(`input-${eq.id}-${ip.name}`);
+                v[ip.name] = parseFloat(el.value) || 0;
             });
 
-            try {
-                const res = eq.calculator.compute(values);
-                const labelEl = document.getElementById(`calc-res-label-${eqId}`);
-                const valEl = document.getElementById(`calc-res-val-${eqId}`);
-                if (labelEl) labelEl.textContent = res.label;
-                if (valEl) valEl.textContent = `${res.value} ${res.unit || ''}`;
-            } catch (err) {
-                console.error("Calculation Error:", err);
+            const res = typeof eq.solver.calc === 'function' ? eq.solver.calc(v) : eq.solver.calc;
+            document.getElementById(`result-${eq.id}`).innerText = res;
+        };
+
+        window.toggleBookmark = function(id) {
+            if (bookmarks.includes(id)) {
+                bookmarks = bookmarks.filter(bId => bId !== id);
+            } else {
+                bookmarks.push(id);
             }
+            localStorage.setItem('vault_bookmarks', JSON.stringify(bookmarks));
+            renderVault();
+        };
+
+        window.copyLatex = function(latexText) {
+            navigator.clipboard.writeText(latexText).then(() => {
+                toast.classList.add('show');
+                setTimeout(() => toast.classList.remove('show'), 2000);
+            });
+        };
+
+        function updateStats() {
+            totalFormulasEl.innerText = equations.length;
+            savedCountEl.innerText = bookmarks.length;
         }
 
-        // Copy LaTeX Handler
-        function copyLatex(latexStr) {
-            const el = document.createElement('textarea');
-            el.value = latexStr;
-            document.body.appendChild(el);
-            el.select();
-            document.execCommand('copy');
-            document.body.removeChild(el);
-
-            showToast("LaTeX formula copied to clipboard!");
+        // Search Handlers
+        function executeSearch() {
+            searchQuery = searchInput.value.toLowerCase().trim();
+            renderVault();
         }
 
-        // Toast Helper
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            const toastMsg = document.getElementById('toastMsg');
-            toastMsg.textContent = msg;
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            toast.classList.add('translate-y-0', 'opacity-100');
+        searchBtn.addEventListener('click', executeSearch);
+        searchInput.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter') executeSearch();
+            searchQuery = searchInput.value.toLowerCase().trim();
+            renderVault();
+        });
 
-            setTimeout(() => {
-                toast.classList.remove('translate-y-0', 'opacity-100');
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 2500);
-        }
-
-        // Modal Handlers
-        function openAboutModal() {
-            document.getElementById('aboutModal').classList.remove('hidden');
-        }
-
-        function closeAboutModal() {
-            document.getElementById('aboutModal').classList.add('hidden');
-        }
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', () => {
+            renderVault();
+        });
     </script>
 </body>
 </html>
