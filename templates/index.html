@@ -1,373 +1,780 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GeoPulse RS - Geospatial & Remote Sensing Study Hub</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
-    body { font-family: 'Inter', sans-serif; }
-    h1, h2, h3, h4, .font-heading { font-family: 'Space Grotesk', sans-serif; }
-    .glass { background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
-    .gradient-text { background: linear-gradient(135deg, #38bdf8 0%, #34d399 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math & Physics Equation Library</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#312e81',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- KaTeX CSS & JS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .katex-display {
+            margin: 0.5em 0 !important;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 0.25em 0;
+        }
+    </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col">
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-brand-500 selection:text-white">
 
-  <!-- NAVIGATION BAR -->
-  <header class="border-b border-slate-800 bg-slate-900/80 sticky top-0 z-50 backdrop-blur">
-    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-      <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-emerald-400 flex items-center justify-center text-slate-950 font-bold text-xl shadow-lg shadow-cyan-500/20">
-          <i class="fa-solid fa-earth-africa"></i>
+    <!-- Header / Navbar -->
+    <header class="sticky top-0 z-40 bg-slate-900/80 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-400 flex items-center justify-center text-white shadow-lg shadow-brand-500/30">
+                    <i class="fa-solid me-0 fa-square-root-variable text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight bg-gradient-to-r from-white via-slate-200 to-indigo-300 bg-clip-text text-transparent">PhysMath Vault</h1>
+                    <p class="text-xs text-slate-400">Interactive Equation Reference & Solver</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <a href="#about" onclick="openAboutModal()" class="text-xs sm:text-sm text-slate-400 hover:text-indigo-400 transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-circle-info"></i> About
+                </a>
+                <span class="text-xs px-2.5 py-1 rounded-full bg-brand-500/10 text-brand-400 border border-brand-500/20 font-medium">
+                    v1.0 Ready
+                </span>
+            </div>
         </div>
-        <div>
-          <span class="font-heading font-bold text-xl tracking-tight text-white">GeoPulse <span class="gradient-text">RS</span></span>
-          <p class="text-xs text-slate-400">GIS & Remote Sensing Portal</p>
-        </div>
-      </div>
+    </header>
 
-      <div id="userInfo" class="hidden flex items-center space-x-3">
-        <div class="text-right hidden sm:block">
-          <p id="userDisplayName" class="text-sm font-semibold text-slate-200">User</p>
-          <p id="userDisplayId" class="text-xs text-emerald-400 font-mono">ID</p>
-        </div>
-        <button onclick="logout()" class="px-3 py-1.5 rounded-lg border border-slate-700 bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 transition">
-          <i class="fa-solid fa-right-from-bracket mr-1"></i> Logout
-        </button>
-      </div>
-    </div>
-  </header>
+    <!-- Hero Banner & Controls -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        
+        <!-- Search and Info Section -->
+        <section class="text-center max-w-3xl mx-auto space-y-4 pt-4">
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+                Explore Equations with <span class="bg-gradient-to-r from-brand-400 to-cyan-400 bg-clip-text text-transparent">Live Calculation</span>
+            </h2>
+            <p class="text-slate-400 text-sm sm:text-base">
+                Search through fundamental physics and mathematical formulas, examine step-by-step solved examples, and calculate live parameter outputs.
+            </p>
 
-  <!-- AUTHENTICATION CONTAINER -->
-  <section id="authSection" class="flex-1 flex items-center justify-center p-4">
-    <div class="max-w-md w-full glass rounded-2xl p-8 shadow-2xl border border-slate-800 text-center">
-      <div class="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center mx-auto mb-4 text-cyan-400 text-2xl">
-        <i class="fa-solid fa-satellite font-bold"></i>
-      </div>
-      
-      <h2 id="authTitle" class="text-2xl font-heading font-bold text-white mb-1">Student Portal Access</h2>
-      <p id="authSubtitle" class="text-sm text-slate-400 mb-6">Log in or register your unique Student ID account.</p>
+            <!-- Search Bar -->
+            <div class="relative max-w-2xl mx-auto mt-6">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                    <i class="fa-solid fa-magnifying-glass text-lg"></i>
+                </div>
+                <input type="text" id="searchInput" 
+                    placeholder="Search by title, formula (e.g. E=mc^2), variables, or concept..."
+                    class="w-full pl-11 pr-12 py-3.5 bg-slate-800/90 border border-slate-700/80 rounded-2xl text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition shadow-inner"
+                    oninput="filterEquations()">
+                <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+        </section>
 
-      <!-- TAB TOGGLE -->
-      <div class="flex bg-slate-900 p-1 rounded-xl mb-6 border border-slate-800">
-        <button id="loginTabBtn" onclick="switchAuthMode('login')" class="flex-1 py-2 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 transition">Sign In</button>
-        <button id="registerTabBtn" onclick="switchAuthMode('register')" class="flex-1 py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition">Register Account</button>
-      </div>
+        <!-- Category Filters -->
+        <section class="flex items-center justify-center flex-wrap gap-2 pt-2" id="categoryContainer">
+            <!-- Populated via JS -->
+        </section>
 
-      <!-- AUTH FORM -->
-      <form id="authForm" onsubmit="handleAuth(event)" class="space-y-4 text-left">
-        <div id="nameFieldContainer" class="hidden">
-          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Full Name</label>
-          <input type="text" id="fullNameInput" placeholder="e.g. Benard Mwangi"
-            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500">
-        </div>
+        <!-- Equation Cards Grid -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-6" id="equationGrid">
+            <!-- Cards rendered via JS -->
+        </section>
 
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Student ID Number</label>
-          <input type="text" id="studentIdInput" placeholder="e.g. E032-01-1778/2025" required
-            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm font-mono text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500">
-        </div>
-
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1">Passcode / PIN</label>
-          <input type="password" id="passcodeInput" placeholder="••••••••" required
-            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500">
-        </div>
-
-        <button type="submit" id="authSubmitBtn" class="w-full py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold text-sm transition shadow-lg shadow-cyan-500/25">
-          Sign In
-        </button>
-      </form>
-    </div>
-  </section>
-
-  <!-- MAIN APP CONTAINER (OPEN-ENDED LESSON SEARCH) -->
-  <section id="appSection" class="hidden max-w-7xl mx-auto px-4 py-8 w-full space-y-8 flex-1">
-    
-    <!-- FREE-TEXT SEARCH ENGINE CARD -->
-    <div class="glass rounded-2xl p-6 shadow-xl border border-slate-800">
-      <h2 class="text-xl font-heading font-bold text-white mb-2 flex items-center">
-        <i class="fa-solid fa-pen-nib text-cyan-400 mr-2"></i> Custom GIS & Remote Sensing Module Generator
-      </h2>
-      <p class="text-xs text-slate-400 mb-4">Type any unit name and lesson topic you want to study. If it's new, the platform will initialize it instantly!</p>
-      
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-        <div>
-          <label class="block text-xs text-slate-400 mb-1">Unit Name</label>
-          <input type="text" id="unitInput" placeholder="e.g. Geospatial Data Structures"
-            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-cyan-500">
+        <!-- No Results Empty State -->
+        <div id="noResults" class="hidden text-center py-16 space-y-3">
+            <div class="w-16 h-16 mx-auto rounded-full bg-slate-800 flex items-center justify-center text-slate-500 text-2xl">
+                <i class="fa-solid fa-folder-open"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-slate-300">No matching equations found</h3>
+            <p class="text-slate-500 text-sm">Try tweaking your search keywords or clear the category filters.</p>
+            <button onclick="resetFilters()" class="mt-2 px-4 py-2 bg-brand-600 text-white text-xs font-medium rounded-xl hover:bg-brand-500 transition">
+                Reset All Filters
+            </button>
         </div>
 
-        <div>
-          <label class="block text-xs text-slate-400 mb-1">Lesson / Topic Name</label>
-          <input type="text" id="topicInput" placeholder="e.g. LiDAR Point Cloud Classification"
-            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-cyan-500" required>
-        </div>
+    </main>
 
-        <div class="flex items-end">
-          <button onclick="fetchCustomLesson()" class="w-full py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl text-sm transition shadow-lg shadow-emerald-500/20">
-            Generate / Load Lesson
-          </button>
+    <!-- Footer -->
+    <footer class="mt-auto border-t border-slate-800 bg-slate-950/60 py-6 text-center text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p>© 2026 PhysMath Vault. Built with KaTeX & Tailwind CSS.</p>
+            <div class="flex items-center space-x-4">
+                <span><i class="fa-solid fa-bolt text-brand-400 me-1"></i> Interactive Simulators Included</span>
+            </div>
         </div>
-      </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 transform translate-y-20 opacity-0 transition-all duration-300 z-50 bg-slate-800 border border-brand-500/40 text-slate-100 px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-3">
+        <div class="w-7 h-7 rounded-lg bg-brand-500/20 text-brand-400 flex items-center justify-center">
+            <i class="fa-solid fa-check text-sm"></i>
+        </div>
+        <span id="toastMsg" class="text-sm font-medium">Copied to clipboard!</span>
     </div>
 
-    <!-- MODULE CONTENT DISPLAY -->
-    <div id="moduleDisplay" class="space-y-8">
-      
-      <!-- TOPIC OVERVIEW CARD -->
-      <div class="glass rounded-2xl p-6 border border-slate-800">
-        <div class="flex justify-between items-center">
-          <span id="displayUnitName" class="px-2.5 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 text-xs font-semibold uppercase tracking-wider">Digital Image Processing</span>
-          <span id="displayFormula" class="text-xs font-mono text-emerald-400">Formula: (NIR - Red) / (NIR + Red)</span>
+    <!-- About Modal -->
+    <div id="aboutModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-4 text-slate-300 shadow-2xl relative">
+            <button onclick="closeAboutModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <h3 class="text-xl font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-atom text-brand-400"></i> About PhysMath Vault
+            </h3>
+            <p class="text-sm text-slate-400 leading-relaxed">
+                PhysMath Vault is an interactive mathematical and physical equations library. It combines textbook LaTeX typesetting with live execution calculators so you can visually verify formulas and run simulations.
+            </p>
+            <div class="border-t border-slate-800 pt-3 text-xs space-y-1 text-slate-400">
+                <p><strong>Features:</strong> KaTeX LaTeX rendering, live variable input math solvers, step-by-step worked solutions.</p>
+            </div>
+            <button onclick="closeAboutModal()" class="w-full py-2.5 bg-brand-600 hover:bg-brand-500 text-white rounded-xl text-sm font-medium transition">
+                Close
+            </button>
         </div>
-        <h3 id="displayTopicTitle" class="text-2xl font-heading font-bold text-white mt-2">NDVI & Spectral Vegetation Indices</h3>
-        <p id="displayTopicDesc" class="text-sm text-slate-300 mt-2 leading-relaxed">
-          Vegetation indices measure plant health using spectral reflectance differences across red and Near-Infrared (NIR) light bands.
-        </p>
-      </div>
-
-      <!-- INTERACTIVE SIMULATOR CARD -->
-      <div class="glass rounded-2xl p-6 border border-slate-800">
-        <h3 class="text-lg font-heading font-bold text-white mb-4 flex items-center">
-          <i class="fa-solid fa-sliders text-emerald-400 mr-2"></i> Interactive Spectral Simulator
-        </h3>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div class="space-y-4">
-            <div>
-              <div class="flex justify-between text-xs text-slate-300 mb-1">
-                <span>Near-Infrared (NIR Band 8) Reflectance</span>
-                <span id="nirVal" class="font-mono text-cyan-400">0.75</span>
-              </div>
-              <input type="range" id="nirSlider" min="0" max="1" step="0.01" value="0.75" oninput="updateNDVI()" class="w-full accent-cyan-400">
-            </div>
-
-            <div>
-              <div class="flex justify-between text-xs text-slate-300 mb-1">
-                <span>Red (Band 4) Reflectance</span>
-                <span id="redVal" class="font-mono text-red-400">0.12</span>
-              </div>
-              <input type="range" id="redSlider" min="0" max="1" step="0.01" value="0.12" oninput="updateNDVI()" class="w-full accent-red-400">
-            </div>
-
-            <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-between">
-              <div>
-                <p class="text-xs text-slate-400">Calculated Index</p>
-                <p id="ndviResult" class="text-3xl font-heading font-bold text-emerald-400">0.72</p>
-              </div>
-              <div class="text-right">
-                <p class="text-xs text-slate-400">Target Classification</p>
-                <span id="ndviClass" class="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-semibold">Dense Green Canopy</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="h-48 bg-slate-900/60 rounded-xl p-2 border border-slate-800 flex items-center justify-center">
-            <canvas id="ndviChart"></canvas>
-          </div>
-        </div>
-      </div>
-
-      <!-- PYTHON & GEE CODE SNIPPETS -->
-      <div class="glass rounded-2xl p-6 border border-slate-800">
-        <h3 class="text-lg font-heading font-bold text-white mb-4 flex items-center">
-          <i class="fa-solid fa-code text-cyan-400 mr-2"></i> Code Snippets (Python & Google Earth Engine)
-        </h3>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div>
-            <div class="flex justify-between items-center bg-slate-900 px-4 py-2 border-t border-x border-slate-800 rounded-t-xl text-xs font-mono text-slate-400">
-              <span>Python Code</span>
-              <button onclick="copyCode('pythonSnippet')" class="text-cyan-400 hover:text-cyan-300"><i class="fa-regular fa-copy"></i> Copy</button>
-            </div>
-            <pre id="pythonSnippet" class="bg-slate-950 p-4 rounded-b-xl border border-slate-800 font-mono text-xs text-emerald-300 overflow-x-auto">import rasterio</pre>
-          </div>
-
-          <div>
-            <div class="flex justify-between items-center bg-slate-900 px-4 py-2 border-t border-x border-slate-800 rounded-t-xl text-xs font-mono text-slate-400">
-              <span>Google Earth Engine</span>
-              <button onclick="copyCode('geeSnippet')" class="text-cyan-400 hover:text-cyan-300"><i class="fa-regular fa-copy"></i> Copy</button>
-            </div>
-            <pre id="geeSnippet" class="bg-slate-950 p-4 rounded-b-xl border border-slate-800 font-mono text-xs text-cyan-300 overflow-x-auto">// GEE script</pre>
-          </div>
-        </div>
-      </div>
-
     </div>
-  </section>
 
-  <!-- JAVASCRIPT -->
-  <script>
-    let isRegisterMode = false;
-    let ndviChartInstance = null;
+    <!-- Application JavaScript Logic -->
+    <script>
+        // Data Store: Master Equations Dataset
+        const equations = [
+            {
+                id: 'mass-energy',
+                title: 'Mass-Energy Equivalence',
+                category: 'Relativity',
+                latex: 'E = m c^2',
+                description: 'Formulated by Albert Einstein, this equation states that mass and energy are interchangeable; a small amount of mass can be converted into a large amount of energy.',
+                variables: [
+                    { symbol: 'E', name: 'Rest Energy', unit: 'Joules (J)' },
+                    { symbol: 'm', name: 'Mass', unit: 'Kilograms (kg)' },
+                    { symbol: 'c', name: 'Speed of Light in Vacuum', unit: '299,792,458 m/s' }
+                ],
+                example: {
+                    problem: 'Calculate the rest energy stored in a 0.005 kg (5 grams) marble.',
+                    solutionSteps: [
+                        'Given mass $m = 0.005\\text{ kg}$ and $c = 2.998 \\times 10^8\\text{ m/s}$.',
+                        'Apply Einstein’s equation: $E = (0.005) \\times (2.998 \\times 10^8)^2$.',
+                        'Calculate $c^2 = 8.988 \\times 10^{16}\\text{ m}^2/\\text{s}^2$.',
+                        'Multiply: $E = 0.005 \\times 8.988 \\times 10^{16} = 4.494 \\times 10^{14}\\text{ Joules}$.'
+                    ]
+                },
+                calculator: {
+                    inputs: [
+                        { id: 'm', label: 'Mass (m in kg)', default: 1 }
+                    ],
+                    constants: { c: 299792458 },
+                    compute: (vals) => {
+                        const m = parseFloat(vals.m) || 0;
+                        const c = 299792458;
+                        const E = m * Math.pow(c, 2);
+                        return {
+                            label: 'Energy (E)',
+                            value: E.toExponential(4),
+                            unit: 'Joules (J)'
+                        };
+                    }
+                }
+            },
+            {
+                id: 'newton-second',
+                title: 'Newton\'s Second Law of Motion',
+                category: 'Kinematics',
+                latex: 'F = m a',
+                description: 'The acceleration of an object as produced by a net force is directly proportional to the magnitude of the net force and inversely proportional to the object\'s mass.',
+                variables: [
+                    { symbol: 'F', name: 'Net Force', unit: 'Newtons (N)' },
+                    { symbol: 'm', name: 'Mass of the object', unit: 'Kilograms (kg)' },
+                    { symbol: 'a', name: 'Acceleration', unit: 'm/s²' }
+                ],
+                example: {
+                    problem: 'A car with a mass of 1,200 kg accelerates at a rate of 3.5 m/s². What net force is acting on it?',
+                    solutionSteps: [
+                        'Identify parameters: $m = 1200\\text{ kg}$, $a = 3.5\\text{ m/s}^2$.',
+                        'Apply Newton’s 2nd Law formula: $F = m \\times a$.',
+                        '$F = 1200 \\times 3.5 = 4200\\text{ N}$.'
+                    ]
+                },
+                calculator: {
+                    inputs: [
+                        { id: 'm', label: 'Mass (m in kg)', default: 1200 },
+                        { id: 'a', label: 'Acceleration (a in m/s²)', default: 3.5 }
+                    ],
+                    compute: (vals) => {
+                        const m = parseFloat(vals.m) || 0;
+                        const a = parseFloat(vals.a) || 0;
+                        const F = m * a;
+                        return {
+                            label: 'Net Force (F)',
+                            value: F.toLocaleString(),
+                            unit: 'Newtons (N)'
+                        };
+                    }
+                }
+            },
+            {
+                id: 'gravitational-force',
+                title: 'Newton\'s Law of Universal Gravitation',
+                category: 'Kinematics',
+                latex: 'F = G \\frac{m_1 m_2}{r^2}',
+                description: 'Describes the gravitational attraction between two point masses separated by a distance r.',
+                variables: [
+                    { symbol: 'F', name: 'Gravitational force', unit: 'Newtons (N)' },
+                    { symbol: 'G', name: 'Gravitational constant', unit: '6.674×10⁻¹¹ N·m²/kg²' },
+                    { symbol: 'm_1, m_2', name: 'Masses of object 1 & 2', unit: 'Kilograms (kg)' },
+                    { symbol: 'r', name: 'Distance between centers', unit: 'Meters (m)' }
+                ],
+                example: {
+                    problem: 'Calculate the gravitational attraction between two 80 kg people standing 2 meters apart.',
+                    solutionSteps: [
+                        'Given $m_1 = 80\\text{ kg}$, $m_2 = 80\\text{ kg}$, $r = 2\\text{ m}$, $G = 6.674 \\times 10^{-11}$.',
+                        'Formula: $F = (6.674 \\times 10^{-11}) \\times \\frac{80 \\times 80}{2^2}$.',
+                        '$F = 6.674 \\times 10^{-11} \\times 1600 = 1.0678 \\times 10^{-7}\\text{ N}$.'
+                    ]
+                },
+                calculator: {
+                    inputs: [
+                        { id: 'm1', label: 'Mass 1 (kg)', default: 5.972e24 }, // Earth
+                        { id: 'm2', label: 'Mass 2 (kg)', default: 70 },      // Person
+                        { id: 'r', label: 'Distance (m)', default: 6371000 }   // Radius Earth
+                    ],
+                    compute: (vals) => {
+                        const m1 = parseFloat(vals.m1) || 0;
+                        const m2 = parseFloat(vals.m2) || 0;
+                        const r = parseFloat(vals.r) || 1;
+                        const G = 6.6743e-11;
+                        const F = (G * m1 * m2) / (r * r);
+                        return {
+                            label: 'Gravitational Force (F)',
+                            value: F < 0.001 ? F.toExponential(4) : F.toFixed(2),
+                            unit: 'Newtons (N)'
+                        };
+                    }
+                }
+            },
+            {
+                id: 'schrodinger',
+                title: 'Time-Dependent Schrödinger Equation',
+                category: 'Quantum Mechanics',
+                latex: 'i\\hbar \\frac{\\partial}{\\partial t}\\Psi(\\mathbf{r},t) = \\hat{H}\\Psi(\\mathbf{r},t)',
+                description: 'The core linear partial differential equation that governs how the wave function of a quantum-mechanical system evolves over time.',
+                variables: [
+                    { symbol: 'i', name: 'Imaginary unit', unit: '√(-1)' },
+                    { symbol: 'ℏ', name: 'Reduced Planck constant', unit: '1.05457×10⁻³⁴ J·s' },
+                    { symbol: 'Ψ', name: 'Quantum Wave Function', unit: 'Probability Amplitude' },
+                    { symbol: 'Ĥ', name: 'Hamiltonian Operator', unit: 'Total Energy Operator' }
+                ],
+                example: {
+                    problem: 'Calculate the energy level $E_n$ for a particle in a 1D infinite square well of width $L=1\\text{ nm}$ for state $n=1$.',
+                    solutionSteps: [
+                        'Energy levels for 1D box: $E_n = \\frac{n^2 h^2}{8 m L^2}$.',
+                        'For an electron ($m = 9.109 \\times 10^{-31}\\text{ kg}$) and $n=1, L=10^{-9}\\text{ m}$:',
+                        '$E_1 = \\frac{1^2 \\times (6.626 \\times 10^{-34})^2}{8 \\times 9.109 \\times 10^{-31} \\times 10^{-18}} \\approx 6.02 \\times 10^{-19}\\text{ Joules } (3.76\\text{ eV})$.'
+                    ]
+                },
+                calculator: {
+                    inputs: [
+                        { id: 'n', label: 'Quantum State (n)', default: 1 },
+                        { id: 'L', label: 'Well Width (nm)', default: 1 }
+                    ],
+                    compute: (vals) => {
+                        const n = parseInt(vals.n) || 1;
+                        const L_nm = parseFloat(vals.L) || 1;
+                        const L = L_nm * 1e-9;
+                        const h = 6.62607015e-34;
+                        const me = 9.1093837e-31; // electron mass
+                        const E_joules = (n * n * h * h) / (8 * me * L * L);
+                        const E_ev = E_joules / 1.602176634e-19;
+                        return {
+                            label: 'Energy Level (E_n)',
+                            value: `${E_ev.toFixed(3)} eV (${E_joules.toExponential(3)} J)`,
+                            unit: ''
+                        };
+                    }
+                }
+            },
+            {
+                id: 'quadratic-formula',
+                title: 'Quadratic Formula',
+                category: 'Algebra',
+                latex: 'x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}',
+                description: 'Provides the roots/solutions of a quadratic equation of the form $ax^2 + bx + c = 0$.',
+                variables: [
+                    { symbol: 'a', name: 'Quadratic coefficient', unit: 'a ≠ 0' },
+                    { symbol: 'b', name: 'Linear coefficient', unit: 'Real number' },
+                    { symbol: 'c', name: 'Constant term', unit: 'Real number' },
+                    { symbol: 'x', name: 'Roots/Solutions', unit: 'Real or Complex' }
+                ],
+                example: {
+                    problem: 'Find the roots for the quadratic equation $x^2 - 5x + 6 = 0$.',
+                    solutionSteps: [
+                        'Identify coefficients: $a=1, b=-5, c=6$.',
+                        'Compute Discriminant $\\Delta = b^2 - 4ac = (-5)^2 - 4(1)(6) = 25 - 24 = 1$.',
+                        'Apply formula: $x = \\frac{5 \\pm \\sqrt{1}}{2(1)} = \\frac{5 \\pm 1}{2}$.',
+                        'Roots are $x_1 = 3$ and $x_2 = 2$.'
+                    ]
+                },
+                calculator: {
+                    inputs: [
+                        { id: 'a', label: 'Coefficient a', default: 1 },
+                        { id: 'b', label: 'Coefficient b', default: -5 },
+                        { id: 'c', label: 'Coefficient c', default: 6 }
+                    ],
+                    compute: (vals) => {
+                        const a = parseFloat(vals.a);
+                        const b = parseFloat(vals.b);
+                        const c = parseFloat(vals.c);
+                        if (a === 0) return { label: 'Roots (x)', value: 'Not a quadratic (a cannot be 0)', unit: '' };
+                        
+                        const disc = b * b - 4 * a * c;
+                        if (disc > 0) {
+                            const x1 = (-b + Math.sqrt(disc)) / (2 * a);
+                            const x2 = (-b - Math.sqrt(disc)) / (2 * a);
+                            return { label: 'Roots (x₁, x₂)', value: `x₁ = ${x1.toFixed(3)}, x₂ = ${x2.toFixed(3)}`, unit: '' };
+                        } else if (disc === 0) {
+                            const x = -b / (2 * a);
+                            return { label: 'Single Root (x)', value: `x = ${x.toFixed(3)}`, unit: '' };
+                        } else {
+                            const real = (-b / (2 * a)).toFixed(3);
+                            const imag = (Math.sqrt(-disc) / (2 * a)).toFixed(3);
+                            return { label: 'Complex Roots', value: `${real} ± ${imag}i`, unit: '' };
+                        }
+                    }
+                }
+            },
+            {
+                id: 'coulombs-law',
+                title: 'Coulomb\'s Law of Electrostatics',
+                category: 'Electromagnetism',
+                latex: 'F = k_e \\frac{|q_1 q_2|}{r^2}',
+                description: 'Quantifies the amount of electrostatic force between two stationary, electrically charged particles.',
+                variables: [
+                    { symbol: 'F', name: 'Electrostatic Force', unit: 'Newtons (N)' },
+                    { symbol: 'k_e', name: 'Coulomb Constant', unit: '8.98755×10⁹ N·m²/C²' },
+                    { symbol: 'q_1, q_2', name: 'Electric charges', unit: 'Coulombs (C)' },
+                    { symbol: 'r', name: 'Distance between charges', unit: 'Meters (m)' }
+                ],
+                example: {
+                    problem: 'Calculate the repulsion force between two +1μC charges separated by 0.1 meters.',
+                    solutionSteps: [
+                        'Charges: $q_1 = 10^{-6}\\text{ C}, q_2 = 10^{-6}\\text{ C}, r = 0.1\\text{ m}$.',
+                        '$F = (8.988 \\times 10^9) \\times \\frac{10^{-6} \\times 10^{-6}}{(0.1)^2}$.',
+                        '$F = 8.988 \\times 10^9 \\times \\frac{10^{-12}}{0.01} = 0.8988\\text{ N}$.'
+                    ]
+                },
+                calculator: {
+                    inputs: [
+                        { id: 'q1', label: 'Charge 1 (µC)', default: 1 },
+                        { id: 'q2', label: 'Charge 2 (µC)', default: 1 },
+                        { id: 'r', label: 'Distance (m)', default: 0.1 }
+                    ],
+                    compute: (vals) => {
+                        const q1 = (parseFloat(vals.q1) || 0) * 1e-6;
+                        const q2 = (parseFloat(vals.q2) || 0) * 1e-6;
+                        const r = parseFloat(vals.r) || 0.1;
+                        const ke = 8.9875517923e9;
+                        const F = (ke * Math.abs(q1 * q2)) / (r * r);
+                        return {
+                            label: 'Electrostatic Force (F)',
+                            value: F < 0.01 ? F.toExponential(4) : F.toFixed(4),
+                            unit: 'Newtons (N)'
+                        };
+                    }
+                }
+            },
+            {
+                id: 'ideal-gas-law',
+                title: 'Ideal Gas Law',
+                category: 'Thermodynamics',
+                latex: 'P V = n R T',
+                description: 'The equation of state of a hypothetical ideal gas, relating pressure, volume, amount of substance, and absolute temperature.',
+                variables: [
+                    { symbol: 'P', name: 'Pressure', unit: 'Pascals (Pa) / Atm' },
+                    { symbol: 'V', name: 'Volume', unit: 'Cubic meters (m³) or Liters' },
+                    { symbol: 'n', name: 'Amount of substance', unit: 'Moles (mol)' },
+                    { symbol: 'R', name: 'Ideal gas constant', unit: '8.3144 J/(mol·K)' },
+                    { symbol: 'T', name: 'Absolute Temperature', unit: 'Kelvin (K)' }
+                ],
+                example: {
+                    problem: 'Find the pressure of 2 moles of gas contained in a 0.05 m³ vessel at 300 K.',
+                    solutionSteps: [
+                        'Given $n=2\\text{ mol}, V=0.05\\text{ m}^3, T=300\\text{ K}, R=8.314\\text{ J/(mol K)}$.',
+                        'Rearrange formula for pressure: $P = \\frac{n R T}{V}$.',
+                        '$P = \\frac{2 \\times 8.314 \\times 300}{0.05} = \\frac{4988.4}{0.05} = 99,768\\text{ Pa}$.'
+                    ]
+                },
+                calculator: {
+                    inputs: [
+                        { id: 'n', label: 'Amount (moles)', default: 2 },
+                        { id: 'T', label: 'Temperature (K)', default: 300 },
+                        { id: 'V', label: 'Volume (m³)', default: 0.05 }
+                    ],
+                    compute: (vals) => {
+                        const n = parseFloat(vals.n) || 0;
+                        const T = parseFloat(vals.T) || 0;
+                        const V = parseFloat(vals.V) || 1;
+                        const R = 8.314462;
+                        const P_pascal = (n * R * T) / V;
+                        const P_atm = P_pascal / 101325;
+                        return {
+                            label: 'Pressure (P)',
+                            value: `${P_pascal.toLocaleString(undefined, {maximumFractionDigits: 1})} Pa (${P_atm.toFixed(3)} atm)`,
+                            unit: ''
+                        };
+                    }
+                }
+            },
+            {
+                id: 'fundamental-calculus',
+                title: 'Fundamental Theorem of Calculus',
+                category: 'Calculus',
+                latex: '\\int_{a}^{b} f(x)\\, dx = F(b) - F(a)',
+                description: 'Connects the concept of differentiating a function with the concept of integrating a function.',
+                variables: [
+                    { symbol: 'f(x)', name: 'Continuous function', unit: 'Integrand' },
+                    { symbol: 'F(x)', name: 'Antiderivative', unit: 'F\'(x) = f(x)' },
+                    { symbol: '[a, b]', name: 'Integration Limits', unit: 'Interval' }
+                ],
+                example: {
+                    problem: 'Evaluate the definite integral $\\int_{1}^{3} 3x^2\\, dx$.',
+                    solutionSteps: [
+                        'Find antiderivative of $f(x) = 3x^2$: $F(x) = x^3$.',
+                        'Apply upper limit $b=3$: $F(3) = 3^3 = 27$.',
+                        'Apply lower limit $a=1$: $F(1) = 1^3 = 1$.',
+                        'Subtract: $F(3) - F(1) = 27 - 1 = 26$.'
+                    ]
+                },
+                calculator: {
+                    inputs: [
+                        { id: 'a', label: 'Lower Limit (a)', default: 1 },
+                        { id: 'b', label: 'Upper Limit (b)', default: 3 },
+                        { id: 'p', label: 'Power of x (in x^p)', default: 2 }
+                    ],
+                    compute: (vals) => {
+                        const a = parseFloat(vals.a) || 0;
+                        const b = parseFloat(vals.b) || 0;
+                        const p = parseFloat(vals.p) || 1;
+                        
+                        if (p === -1) {
+                            const res = Math.log(Math.abs(b)) - Math.log(Math.abs(a));
+                            return { label: 'Integral value ∫ x⁻¹ dx', value: res.toFixed(4), unit: '' };
+                        }
+                        
+                        const antideriv = (x) => Math.pow(x, p + 1) / (p + 1);
+                        const result = antideriv(b) - antideriv(a);
+                        return {
+                            label: `Definite Integral ∫ x^${p} dx`,
+                            value: result.toFixed(4),
+                            unit: ''
+                        };
+                    }
+                }
+            }
+        ];
 
-    function switchAuthMode(mode) {
-      isRegisterMode = (mode === 'register');
-      const nameField = document.getElementById('nameFieldContainer');
-      const authTitle = document.getElementById('authTitle');
-      const authSubtitle = document.getElementById('authSubtitle');
-      const submitBtn = document.getElementById('authSubmitBtn');
-      const loginBtn = document.getElementById('loginTabBtn');
-      const regBtn = document.getElementById('registerTabBtn');
+        // State Management
+        let selectedCategory = 'All';
+        let expandedCardId = null;
 
-      if (isRegisterMode) {
-        nameField.classList.remove('hidden');
-        authTitle.innerText = "Create New Account";
-        authSubtitle.innerText = "Register with your Student ID and secure passcode.";
-        submitBtn.innerText = "Register Account";
-        regBtn.className = "flex-1 py-2 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 transition";
-        loginBtn.className = "flex-1 py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition";
-      } else {
-        nameField.classList.add('hidden');
-        authTitle.innerText = "Student Portal Access";
-        authSubtitle.innerText = "Log in or register your unique Student ID account.";
-        submitBtn.innerText = "Sign In";
-        loginBtn.className = "flex-1 py-2 text-xs font-semibold rounded-lg bg-cyan-500 text-slate-950 transition";
-        regBtn.className = "flex-1 py-2 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition";
-      }
-    }
-
-    async function handleAuth(e) {
-      e.preventDefault();
-      const studentId = document.getElementById('studentIdInput').value;
-      const passcode = document.getElementById('passcodeInput').value;
-      const fullname = document.getElementById('fullNameInput').value || "Student";
-
-      const endpoint = isRegisterMode ? '/api/v1/auth/register' : '/api/v1/auth/student-login';
-      const payload = isRegisterMode ? { student_id: studentId, passcode, fullname } : { student_id: studentId, passcode };
-
-      try {
-        const res = await fetch(endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCategories();
+            renderEquations();
         });
-        const data = await res.json();
 
-        if (res.ok) {
-          if (isRegisterMode) {
-            alert("Registration successful! Please sign in now.");
-            switchAuthMode('login');
-          } else {
-            showApp(data.student_id, data.fullname);
-          }
-        } else {
-          alert(data.message || "Authentication failed.");
+        // Render Category Filter Buttons
+        function renderCategories() {
+            const categories = ['All', ...new Set(equations.map(eq => eq.category))];
+            const container = document.getElementById('categoryContainer');
+            
+            container.innerHTML = categories.map(cat => `
+                <button onclick="setCategory('${cat}')" 
+                    class="category-btn px-4 py-2 rounded-xl text-xs font-semibold transition border ${
+                        selectedCategory === cat 
+                        ? 'bg-brand-600 border-brand-500 text-white shadow-lg shadow-brand-500/20' 
+                        : 'bg-slate-800/80 border-slate-700/60 text-slate-400 hover:text-white hover:bg-slate-800'
+                    }">
+                    ${cat}
+                </button>
+            `).join('');
         }
-      } catch (err) {
-        alert("Connection error. Make sure the server is running.");
-      }
-    }
 
-    function showApp(id, name) {
-      document.getElementById('authSection').classList.add('hidden');
-      document.getElementById('appSection').classList.remove('hidden');
-      document.getElementById('userInfo').classList.remove('hidden');
-      document.getElementById('userDisplayId').innerText = id;
-      document.getElementById('userDisplayName').innerText = name;
-      initChart();
-    }
-
-    function logout() {
-      document.getElementById('appSection').classList.add('hidden');
-      document.getElementById('userInfo').classList.add('hidden');
-      document.getElementById('authSection').classList.remove('hidden');
-    }
-
-    async function fetchCustomLesson() {
-      const unitName = document.getElementById('unitInput').value;
-      const topicName = document.getElementById('topicInput').value;
-
-      if (!topicName) {
-        alert("Please enter a lesson or topic name!");
-        return;
-      }
-
-      try {
-        const res = await fetch('/api/v1/lessons/search', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ unit_name: unitName, topic_name: topicName })
-        });
-        const data = await res.json();
-
-        if (res.ok) {
-          const lesson = data.data;
-          document.getElementById('displayUnitName').innerText = lesson.unit;
-          document.getElementById('displayTopicTitle').innerText = lesson.topic;
-          document.getElementById('displayTopicDesc').innerText = lesson.description;
-          document.getElementById('displayFormula').innerText = "Formula: " + lesson.formula;
-          document.getElementById('pythonSnippet').innerText = lesson.python_code;
-          document.getElementById('geeSnippet').innerText = lesson.gee_code;
-        } else {
-          alert(data.message || "Could not load lesson.");
+        // Set Filter Category
+        function setCategory(cat) {
+            selectedCategory = cat;
+            renderCategories();
+            renderEquations();
         }
-      } catch (err) {
-        alert("Error connecting to server.");
-      }
-    }
 
-    async function updateNDVI() {
-      const nir = parseFloat(document.getElementById('nirSlider').value);
-      const red = parseFloat(document.getElementById('redSlider').value);
-      document.getElementById('nirVal').innerText = nir.toFixed(2);
-      document.getElementById('redVal').innerText = red.toFixed(2);
-
-      try {
-        const res = await fetch('/api/v1/calculate/index', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ nir: nir, red: red })
-        });
-        const data = await res.json();
-        document.getElementById('ndviResult').innerText = data.computed_value.toFixed(2);
-        document.getElementById('ndviClass').innerText = data.classification;
-      } catch (err) {
-        const ndvi = (nir - red) / (nir + red + 0.0001);
-        document.getElementById('ndviResult').innerText = ndvi.toFixed(2);
-      }
-
-      if (ndviChartInstance) {
-        ndviChartInstance.data.datasets[0].data = [red, nir];
-        ndviChartInstance.update();
-      }
-    }
-
-    function initChart() {
-      const ctx = document.getElementById('ndviChart').getContext('2d');
-      ndviChartInstance = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: ['Red (Band 4)', 'NIR (Band 8)'],
-          datasets: [{
-            label: 'Reflectance Ratio',
-            data: [0.12, 0.75],
-            backgroundColor: ['rgba(239, 68, 68, 0.8)', 'rgba(56, 189, 248, 0.8)'],
-            borderRadius: 8
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
-          scales: {
-            y: { min: 0, max: 1, ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } },
-            x: { ticks: { color: '#94a3b8' }, grid: { display: false } }
-          }
+        // Search Filter
+        function filterEquations() {
+            const searchVal = document.getElementById('searchInput').value.trim();
+            const clearBtn = document.getElementById('clearSearchBtn');
+            if (searchVal.length > 0) {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+            }
+            renderEquations();
         }
-      });
-    }
 
-    function copyCode(id) {
-      const codeText = document.getElementById(id).innerText;
-      navigator.clipboard.writeText(codeText);
-      alert('Code copied to clipboard!');
-    }
-  </script>
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('clearSearchBtn').classList.add('hidden');
+            renderEquations();
+        }
+
+        function resetFilters() {
+            selectedCategory = 'All';
+            document.getElementById('searchInput').value = '';
+            document.getElementById('clearSearchBtn').classList.add('hidden');
+            renderCategories();
+            renderEquations();
+        }
+
+        // Main Render Function for Equation Cards
+        function renderEquations() {
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
+            const grid = document.getElementById('equationGrid');
+            const noResults = document.getElementById('noResults');
+
+            const filtered = equations.filter(eq => {
+                const matchesCategory = selectedCategory === 'All' || eq.category === selectedCategory;
+                const matchesSearch = searchQuery === '' || 
+                    eq.title.toLowerCase().includes(searchQuery) ||
+                    eq.latex.toLowerCase().includes(searchQuery) ||
+                    eq.category.toLowerCase().includes(searchQuery) ||
+                    eq.description.toLowerCase().includes(searchQuery) ||
+                    eq.variables.some(v => v.name.toLowerCase().includes(searchQuery) || v.symbol.toLowerCase().includes(searchQuery));
+                
+                return matchesCategory && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '';
+                noResults.classList.remove('hidden');
+                return;
+            }
+
+            noResults.classList.add('hidden');
+
+            grid.innerHTML = filtered.map(eq => {
+                const isExpanded = expandedCardId === eq.id;
+                return `
+                    <div class="bg-slate-800/60 backdrop-blur-sm border border-slate-700/70 hover:border-brand-500/50 rounded-2xl p-5 sm:p-6 transition-all duration-200 flex flex-col justify-between shadow-xl">
+                        
+                        <!-- Top Meta Header -->
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="px-3 py-1 rounded-full text-xs font-semibold bg-brand-500/10 text-brand-300 border border-brand-500/20">
+                                    ${eq.category}
+                                </span>
+                                <button onclick="copyLatex('${eq.latex.replace(/\\/g, '\\\\')}')" 
+                                    class="text-xs text-slate-400 hover:text-brand-300 px-2.5 py-1 rounded-lg bg-slate-700/50 hover:bg-slate-700 transition flex items-center gap-1.5"
+                                    title="Copy LaTeX formula">
+                                    <i class="fa-regular fa-copy"></i> LaTeX
+                                </button>
+                            </div>
+
+                            <h3 class="text-xl font-bold text-white tracking-tight">${eq.title}</h3>
+                            <p class="text-slate-400 text-xs sm:text-sm line-clamp-2 leading-relaxed">${eq.description}</p>
+                        </div>
+
+                        <!-- Formula Container -->
+                        <div class="my-5 py-4 px-4 bg-slate-900/90 border border-slate-700/60 rounded-xl flex items-center justify-center text-center shadow-inner overflow-x-auto">
+                            <div class="katex-render text-lg sm:text-xl font-math text-indigo-200">\\[${eq.latex}\\]</div>
+                        </div>
+
+                        <!-- Card Footer / Toggle Button -->
+                        <div class="pt-2 border-t border-slate-700/40 flex items-center justify-between">
+                            <span class="text-xs text-slate-400">
+                                <i class="fa-solid fa-sliders text-brand-400 me-1"></i> Interactive Calc Included
+                            </span>
+                            <button onclick="toggleExpand('${eq.id}')" 
+                                class="text-xs font-semibold text-brand-400 hover:text-brand-300 flex items-center gap-1 bg-brand-500/10 hover:bg-brand-500/20 px-3 py-1.5 rounded-xl border border-brand-500/20 transition">
+                                ${isExpanded ? 'Collapse <i class="fa-solid fa-chevron-up text-[10px]"></i>' : 'Solve & Details <i class="fa-solid fa-chevron-down text-[10px]"></i>'}
+                            </button>
+                        </div>
+
+                        <!-- Expanded Section (Variables, Solved Example & Calculator) -->
+                        ${isExpanded ? renderExpandedSection(eq) : ''}
+
+                    </div>
+                `;
+            }).join('');
+
+            // Trigger KaTeX auto-rendering for all math elements on page
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '\\[', right: '\\]', display: true},
+                    {left: '$', right: '$', display: false},
+                    {left: '\\(', right: '\\)', display: false}
+                ],
+                throwOnError: false
+            });
+
+            // Initialize dynamic calculators for expanded cards
+            if (expandedCardId) {
+                const activeEq = equations.find(e => e.id === expandedCardId);
+                if (activeEq) runCalculator(activeEq.id);
+            }
+        }
+
+        // Expand/Collapse Card Handler
+        function toggleExpand(id) {
+            expandedCardId = expandedCardId === id ? null : id;
+            renderEquations();
+        }
+
+        // HTML Generator for Expanded Drawer
+        function renderExpandedSection(eq) {
+            return `
+                <div class="mt-5 pt-5 border-t border-slate-700/80 space-y-6 animate-fadeIn">
+                    
+                    <!-- 1. Variables Definition Table -->
+                    <div class="space-y-2">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+                            <i class="fa-solid fa-list text-brand-400"></i> Variable Definitions
+                        </h4>
+                        <div class="bg-slate-900/60 rounded-xl p-3 border border-slate-700/50 text-xs space-y-2">
+                            ${eq.variables.map(v => `
+                                <div class="flex items-start justify-between border-b border-slate-800/80 pb-1.5 last:border-0 last:pb-0">
+                                    <span class="font-semibold text-brand-300 font-mono text-sm">${v.symbol}</span>
+                                    <div class="text-right">
+                                        <div class="text-slate-200 font-medium">${v.name}</div>
+                                        <div class="text-slate-400 text-[11px]">${v.unit}</div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- 2. Interactive Calculator -->
+                    <div class="space-y-3 bg-gradient-to-b from-slate-900/90 to-slate-950/90 p-4 rounded-xl border border-brand-500/30 shadow-lg">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-brand-400 flex items-center gap-1.5">
+                            <i class="fa-solid fa-calculator text-brand-400"></i> Live Parameter Calculator
+                        </h4>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="calc-inputs-${eq.id}">
+                            ${eq.calculator.inputs.map(inp => `
+                                <div>
+                                    <label class="block text-[11px] font-medium text-slate-400 mb-1">${inp.label}</label>
+                                    <input type="number" step="any" id="inp-${eq.id}-${inp.id}" value="${inp.default}" 
+                                        oninput="runCalculator('${eq.id}')"
+                                        class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-brand-500 font-mono">
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <!-- Result Display Box -->
+                        <div class="mt-3 p-3 bg-brand-950/40 border border-brand-500/30 rounded-lg flex items-center justify-between">
+                            <span class="text-xs font-semibold text-slate-300" id="calc-res-label-${eq.id}">Result</span>
+                            <span class="text-sm font-bold font-mono text-brand-300" id="calc-res-val-${eq.id}">0</span>
+                        </div>
+                    </div>
+
+                    <!-- 3. Worked Example with Step-by-Step Math Solution -->
+                    <div class="space-y-2">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
+                            <i class="fa-solid fa-book-open text-brand-400"></i> Worked Example
+                        </h4>
+                        <div class="bg-slate-900/60 rounded-xl p-3.5 border border-slate-700/50 text-xs space-y-3">
+                            <p class="text-slate-200 font-medium italic">"${eq.example.problem}"</p>
+                            <div class="space-y-1.5 text-slate-400 border-l-2 border-brand-500/40 pl-3">
+                                ${eq.example.solutionSteps.map((step, idx) => `
+                                    <div><strong class="text-slate-300">Step ${idx+1}:</strong> ${step}</div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            `;
+        }
+
+        // Live Computation Engine
+        function runCalculator(eqId) {
+            const eq = equations.find(e => e.id === eqId);
+            if (!eq || !eq.calculator) return;
+
+            const values = {};
+            eq.calculator.inputs.forEach(inp => {
+                const el = document.getElementById(`inp-${eqId}-${inp.id}`);
+                values[inp.id] = el ? el.value : inp.default;
+            });
+
+            try {
+                const res = eq.calculator.compute(values);
+                const labelEl = document.getElementById(`calc-res-label-${eqId}`);
+                const valEl = document.getElementById(`calc-res-val-${eqId}`);
+                if (labelEl) labelEl.textContent = res.label;
+                if (valEl) valEl.textContent = `${res.value} ${res.unit || ''}`;
+            } catch (err) {
+                console.error("Calculation Error:", err);
+            }
+        }
+
+        // Copy LaTeX to Clipboard & Toast Trigger
+        function copyLatex(latexStr) {
+            // Using execCommand fallback for seamless sandbox compatibility
+            const el = document.createElement('textarea');
+            el.value = latexStr;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+
+            showToast("LaTeX equation copied to clipboard!");
+        }
+
+        // Toast Notification Helper
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            toastMsg.textContent = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 2500);
+        }
+
+        // About Modal Handlers
+        function openAboutModal() {
+            document.getElementById('aboutModal').classList.remove('hidden');
+        }
+
+        function closeAboutModal() {
+            document.getElementById('aboutModal').classList.add('hidden');
+        }
+    </script>
 </body>
 </html>
